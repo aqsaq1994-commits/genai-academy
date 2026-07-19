@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI in Your Workflow - GenAI Academy</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --slate-dark: #1A202C; --slate-light: #2D3748; --teal: #06B6D4; --teal-light: #22D3EE;
+            --cream: #F8F9FA; --gray-border: #E2E8F0; --text-secondary: #64748B; --success: #10B981;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'IBM Plex Sans', 'Segoe UI', sans-serif;
+            background: var(--cream); color: var(--slate-dark); line-height: 1.6;
+        }
+        .header {
+            position: sticky; top: 0; background: linear-gradient(135deg, var(--slate-dark) 0%, var(--slate-light) 100%);
+            color: white; padding: 1.5rem 2rem; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .header-title { font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 1rem; }
+        .header-back { background: rgba(255, 255, 255, 0.2); padding: 0.5rem 1rem; border-radius: 6px;
+            color: white; text-decoration: none; font-size: 0.9rem; transition: background 0.3s ease; }
+        .header-back:hover { background: rgba(255, 255, 255, 0.3); }
+        .container { max-width: 1000px; margin: 3rem auto; padding: 0 2rem; }
+        .hero { text-align: center; margin-bottom: 3rem; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--slate-dark), var(--teal));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { font-size: 1.125rem; color: var(--text-secondary); margin-bottom: 2rem; }
+        .divider { height: 1px; background: var(--gray-border); margin: 3rem 0; }
+        .divider.thick { height: 2px; background: linear-gradient(90deg, transparent 0%, var(--teal) 50%, transparent 100%); }
+        .learning-zone {
+            background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
+            color: white; padding: 2rem; border-radius: 12px; display: flex; gap: 1.5rem; margin-bottom: 2rem;
+        }
+        .learning-zone-icon { font-size: 2.5rem; flex-shrink: 0; }
+        .learning-zone h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+        .section-header { display: flex; align-items: center; gap: 1rem; margin: 2rem 0 1.5rem 0;
+            font-size: 1.125rem; font-weight: 600; color: var(--slate-dark); }
+        .section-icon { width: 28px; height: 28px; background: var(--teal); border-radius: 6px;
+            display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.875rem; }
+        .accordion-block {
+            background: white; border: 1px solid var(--gray-border); border-radius: 8px; margin-bottom: 1rem;
+            overflow: hidden; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .accordion-header { background: linear-gradient(135deg, #F8F9FA 0%, #F0F4F8 100%); padding: 1.5rem;
+            cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center;
+            font-weight: 600; color: var(--slate-dark); border-bottom: 2px solid transparent; transition: all 0.3s ease; }
+        .accordion-header:hover { background: linear-gradient(135deg, #F0F4F8 0%, #E0E9F0 100%);
+            border-bottom-color: var(--teal); }
+        .accordion-header.open { background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
+            color: white; border-bottom-color: var(--teal-light); }
+        .accordion-toggle { transition: transform 0.3s ease; font-size: 0.9rem; }
+        .accordion-toggle.open { transform: rotate(180deg); }
+        .accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding: 0 1.5rem; }
+        .accordion-body.open { max-height: 2000px; padding: 1.5rem; }
+        .use-case-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;
+        }
+        .use-case-card {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%); border-left: 4px solid var(--teal);
+            padding: 1.5rem; border-radius: 8px;
+        }
+        .use-case-card strong { color: var(--teal); display: block; margin-bottom: 0.75rem; }
+
+        .persona-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .persona-card {
+            background: white;
+            border: 2px solid var(--gray-border);
+            padding: 1.25rem;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .persona-card:hover {
+            border-color: var(--teal);
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
+        }
+
+        .persona-card.selected {
+            background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
+            color: white;
+            border-color: var(--teal);
+        }
+
+        .persona-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .persona-name { font-weight: 700; margin-bottom: 0.25rem; font-size: 0.95rem; }
+        .persona-title { font-size: 0.85rem; opacity: 0.8; }
+
+        .persona-content {
+            background: white;
+            border: 2px solid var(--teal);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            display: none;
+        }
+
+        .persona-content.show { display: block; animation: fadeIn 0.3s ease; }
+        .persona-content h3 { color: var(--teal); margin-bottom: 1rem; }
+        .quiz-container { background: #F8F9FA; padding: 2rem; border-radius: 12px; margin: 2rem 0;
+            border-left: 4px solid var(--teal); }
+        .quiz-question { font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--slate-dark); }
+        .quiz-options { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
+        .quiz-option { display: flex; align-items: center; gap: 1rem; cursor: pointer; padding: 1rem;
+            background: white; border-radius: 8px; border: 2px solid var(--gray-border); transition: all 0.3s ease; }
+        .quiz-option:hover { border-color: var(--teal); }
+        .quiz-option input[type="radio"] { cursor: pointer; width: 20px; height: 20px; accent-color: var(--teal); }
+        .quiz-button { background: var(--teal); color: white; border: none; padding: 1rem 2rem;
+            border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.3s ease; }
+        .quiz-button:hover:not(:disabled) { background: var(--teal-light); }
+        .quiz-button:disabled { background: #CBD5E1; cursor: not-allowed; }
+        .quiz-feedback { margin-top: 1.5rem; padding: 1rem; border-radius: 8px; font-weight: 500; display: none; }
+        .quiz-feedback.show { display: block; }
+        .quiz-feedback.correct { background: #ECFDF5; color: #065F46; border-left: 4px solid var(--success); }
+        .quiz-feedback.incorrect { background: #FEF2F2; color: #7F1D1D; border-left: 4px solid #EF4444; }
+        .lesson-summary {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%); border-left: 4px solid var(--teal);
+            padding: 2rem; border-radius: 8px; margin-top: 2rem;
+        }
+        .summary-title { font-size: 1.125rem; font-weight: 600; color: var(--slate-dark); margin-bottom: 1rem; }
+        .summary-points { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+        .summary-points li { padding-left: 2rem; position: relative; color: var(--text-secondary); }
+        .summary-points li::before { content: '✓'; position: absolute; left: 0; color: var(--teal); font-weight: 700; }
+        .footer { background: var(--slate-dark); color: white; text-align: center; padding: 3rem 2rem; margin-top: 5rem; }
+        @media (max-width: 768px) { .hero h1 { font-size: 1.75rem; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-title"><span>🤖</span><span>GenAI Academy</span></div>
+        <a href="index.html" class="header-back">← Back to Course</a>
+    </div>
+
+    <div class="container">
+        <div class="hero">
+            <h1>AI in Your Workflow</h1>
+            <p>Real-world applications across different roles. See how professionals use AI daily.</p>
+        </div>
+
+        <div class="divider thick"></div>
+
+        <div class="learning-zone">
+            <div class="learning-zone-icon">💼</div>
+            <div>
+                <h3>AI Multiplies Your Productivity</h3>
+                <p>Across every profession, AI is transforming workflows. Learn practical, immediately usable techniques.</p>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section-header"><div class="section-icon">🎓</div><span>Purpose</span></div>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">This lesson shows real-world examples of how professionals use AI. From marketing to development to HR, you'll see concrete use cases and workflows you can adapt for your own work.</p>
+
+        <div class="divider"></div>
+
+        <div class="section-header"><div class="section-icon">✓</div><span>Lesson Objectives</span></div>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; color: var(--text-secondary);">
+            <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Learn AI applications for your role</span></li>
+            <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Understand productivity gains from AI</span></li>
+            <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Get practical workflows you can implement today</span></li>
+            <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>See how to integrate AI into existing processes</span></li>
+        </ul>
+
+        <div class="divider thick"></div>
+
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;"><strong>Select your role to see personalized AI workflows</strong></p>
+            
+            <div class="persona-selector">
+                <div class="persona-card" onclick="selectPersona('marketer', this)">
+                    <div class="persona-icon">📱</div>
+                    <div class="persona-name">Marketer</div>
+                    <div class="persona-title">Content Creator</div>
+                </div>
+                <div class="persona-card" onclick="selectPersona('developer', this)">
+                    <div class="persona-icon">💻</div>
+                    <div class="persona-name">Developer</div>
+                    <div class="persona-title">Engineer</div>
+                </div>
+                <div class="persona-card" onclick="selectPersona('analyst', this)">
+                    <div class="persona-icon">📊</div>
+                    <div class="persona-name">Analyst</div>
+                    <div class="persona-title">Data Expert</div>
+                </div>
+                <div class="persona-card" onclick="selectPersona('hr', this)">
+                    <div class="persona-icon">👥</div>
+                    <div class="persona-name">HR Prof</div>
+                    <div class="persona-title">Recruiter</div>
+                </div>
+            </div>
+
+            <div id="persona-marketer" class="persona-content">
+                <h3>📱 Marketer Workflows - Save 5-10 hrs/week</h3>
+                <ul style="list-style: disc; margin-left: 2rem; color: var(--text-secondary);">
+                    <li><strong>Brainstorm:</strong> 20 blog topics in 5 min</li>
+                    <li><strong>Draft:</strong> 1000-word post in 20 min</li>
+                    <li><strong>Repurpose:</strong> Post → Twitter + LinkedIn in 15 min</li>
+                    <li><strong>Impact:</strong> 60 hours/year saved (≈ 1.5 weeks)</li>
+                </ul>
+            </div>
+
+            <div id="persona-developer" class="persona-content">
+                <h3>💻 Developer Workflows - 30-40% Faster</h3>
+                <ul style="list-style: disc; margin-left: 2rem; color: var(--text-secondary);">
+                    <li><strong>Boilerplate:</strong> React component in 5 min</li>
+                    <li><strong>Debug:</strong> Error fix in 10 min</li>
+                    <li><strong>Document:</strong> API docs in 15 min</li>
+                    <li><strong>Impact:</strong> GitHub Copilot: 35% coding speed increase</li>
+                </ul>
+            </div>
+
+            <div id="persona-analyst" class="persona-content">
+                <h3>📊 Analyst Workflows - 2 hrs → 20 min</h3>
+                <ul style="list-style: disc; margin-left: 2rem; color: var(--text-secondary);">
+                    <li><strong>Analyze:</strong> Extract trends in 10 min</li>
+                    <li><strong>Summarize:</strong> Key insights in 10 min</li>
+                    <li><strong>Report:</strong> Executive summary in 15 min</li>
+                    <li><strong>Impact:</strong> 6 hours/month = 72 hours/year</li>
+                </ul>
+            </div>
+
+            <div id="persona-hr" class="persona-content">
+                <h3>👥 HR Workflows (Human Decides)</h3>
+                <ul style="list-style: disc; margin-left: 2rem; color: var(--text-secondary);">
+                    <li><strong>Job Descriptions:</strong> Clear JD in 15 min</li>
+                    <li><strong>Resume Screening:</strong> AI flags, humans decide</li>
+                    <li><strong>Onboarding:</strong> 30-60-90 plan in 15 min</li>
+                    <li><strong>⚠️ Critical:</strong> Human makes ALL hiring decisions</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="divider thick"></div>
+
+        <!-- MARKETING -->
+        <div class="accordion-block">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span>📱 For Marketers & Content Creators</span>
+                <span class="accordion-toggle">▼</span>
+            </div>
+            <div class="accordion-body">
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"><strong>AI Use Cases:</strong></p>
+                <div class="use-case-grid">
+                    <div class="use-case-card">
+                        <strong>Content Ideation</strong>
+                        Use AI to brainstorm 20 blog topics, social posts, or campaign angles in seconds
+                    </div>
+                    <div class="use-case-card">
+                        <strong>Copy Writing</strong>
+                        Draft email subject lines, ad copy, product descriptions. AI generates variations, you pick best
+                    </div>
+                    <div class="use-case-card">
+                        <strong>Video Scripts</strong>
+                        AI writes YouTube scripts, TikTok narratives. You review and customize
+                    </div>
+                    <div class="use-case-card">
+                        <strong>SEO Optimization</strong>
+                        AI suggests keywords, outlines, and meta descriptions for better search ranking
+                    </div>
+                </div>
+                <p style="color: var(--text-secondary); margin-top: 1.5rem; padding: 1rem; background: #E0F2FE; border-left: 4px solid var(--teal); border-radius: 8px;"><strong>💡 Pro Workflow:</strong> 1) Brainstorm topics with AI 2) Write first draft with AI 3) Add your voice & insights 4) Optimize for SEO with AI 5) Publish</p>
+            </div>
+        </div>
+
+        <!-- DEVELOPERS -->
+        <div class="accordion-block">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span>💻 For Developers & Engineers</span>
+                <span class="accordion-toggle">▼</span>
+            </div>
+            <div class="accordion-body">
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"><strong>AI Use Cases:</strong></p>
+                <div class="use-case-grid">
+                    <div class="use-case-card">
+                        <strong>Code Generation</strong>
+                        Describe what you need, AI writes boilerplate code. You review and refine
+                    </div>
+                    <div class="use-case-card">
+                        <strong>Debugging</strong>
+                        Paste error messages. AI explains issues and suggests fixes
+                    </div>
+                    <div class="use-case-card">
+                        <strong>Documentation</strong>
+                        AI generates docs from code comments. Saves hours of manual work
+                    </div>
+                    <div class="use-case-card">
+                        <strong>Code Review</strong>
+                        AI spots security vulnerabilities, performance issues, and code smells
+                    </div>
+                </div>
+                <p style="color: var(--text-secondary); margin-top: 1.5rem; padding: 1rem; background: #E0F2FE; border-left: 4px solid var(--teal); border-radius: 8px;"><strong>💡 Speed Boost:</strong> GitHub Copilot saves ~40% coding time. Use AI for boilerplate, you focus on architecture</p>
+            </div>
+        </div>
+
+        <!-- BUSINESS ANALYSTS -->
+        <div class="accordion-block">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span>📊 For Business Analysts & Data Teams</span>
+                <span class="accordion-toggle">▼</span>
+            </div>
+            <div class="accordion-body">
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"><strong>AI Use Cases:</strong></p>
+                <div class="use-case-grid">
+                    <div class="use-case-card">
+                        <strong>Data Summarization</strong>
+                        Upload CSV/report. AI extracts key insights, trends, anomalies
+                    </div>
+                    <div class="use-case-card">
+                        <strong>Dashboard Creation</strong>
+                        AI designs dashboards from requirements. You customize and deploy
+                    </div>
+                    <div class="use-case-card">
+                        <strong>Report Writing</strong>
+                        AI transforms raw data into clear, compelling narratives
+                    </div>
+                    <div class="use-case-card">
+                        <strong>Forecasting</strong>
+                        AI analyzes historical data, identifies patterns, predicts trends
+                    </div>
+                </div>
+                <p style="color: var(--text-secondary); margin-top: 1.5rem; padding: 1rem; background: #E0F2FE; border-left: 4px solid var(--teal); border-radius: 8px;"><strong>💡 Time Saved:</strong> What took 2 hours of manual analysis now takes 10 minutes with AI</p>
+            </div>
+        </div>
+
+        <!-- HR & RECRUI TERS -->
+        <div class="accordion-block">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span>👥 For HR & Recruiters</span>
+                <span class="accordion-toggle">▼</span>
+            </div>
+            <div class="accordion-body">
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"><strong>AI Use Cases (with caution on bias):</strong></p>
+                <div class="use-case-grid">
+                    <div class="use-case-card">
+                        <strong>Job Description</strong>
+                        AI writes clear, comprehensive job descriptions. Reduces ambiguity
+                    </div>
+                    <div class="use-case-card">
+                        <strong>Resume Screening</strong>
+                        AI flags qualified candidates. Humans make final decisions
+                    </div>
+                    <div class="use-case-card">
+                        <strong>Interview Questions</strong>
+                        AI generates role-specific questions that assess skills fairly
+                    </div>
+                    <div class="use-case-card">
+                        <strong>Onboarding Plans</strong>
+                        AI creates personalized onboarding schedules for new hires
+                    </div>
+                </div>
+                <p style="color: var(--text-secondary); margin-top: 1.5rem; padding: 1rem; background: #FEF3C7; border-left: 4px solid #F59E0B; border-radius: 8px;"><strong>⚠️ Important:</strong> Use AI to assist, not decide. Humans must review all hiring decisions to prevent bias</p>
+            </div>
+        </div>
+
+        <!-- GENERAL PROFESSIONALS -->
+        <div class="accordion-block">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span>🎯 For All Professionals</span>
+                <span class="accordion-toggle">▼</span>
+            </div>
+            <div class="accordion-body">
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"><strong>Universal AI Workflows:</strong></p>
+                <div class="use-case-grid">
+                    <div class="use-case-card">
+                        <strong>Email Drafting</strong>
+                        AI writes professional emails. You personalize and send
+                    </div>
+                    <div class="use-case-card">
+                        <strong>Meeting Summaries</strong>
+                        Paste meeting transcript. AI extracts action items, decisions
+                    </div>
+                    <div class="use-case-card">
+                        <strong>Presentation Design</strong>
+                        AI structures outlines, writes speaker notes, suggests visuals
+                    </div>
+                    <div class="use-case-card">
+                        <strong>Research & Learning</strong>
+                        AI explains complex topics, summarizes research, finds patterns
+                    </div>
+                </div>
+                <p style="color: var(--text-secondary); margin-top: 1.5rem; padding: 1rem; background: #E0F2FE; border-left: 4px solid var(--teal); border-radius: 8px;"><strong>💡 Daily Habit:</strong> Use AI for your top 3 time-consuming tasks. You'll save 3-5 hours per week</p>
+            </div>
+        </div>
+
+        <div class="divider thick"></div>
+
+        <div class="quiz-container">
+            <div class="quiz-question">✏️ Check Your Understanding</div>
+            <div style="font-size: 1rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--slate-dark);">Which AI workflow gives you the biggest time savings?</div>
+            <div class="quiz-options">
+                <label class="quiz-option">
+                    <input type="radio" name="q1" value="a" onchange="document.getElementById('q1-check').disabled=false">
+                    <span>Using AI for small tasks (spell-checking emails)</span>
+                </label>
+                <label class="quiz-option">
+                    <input type="radio" name="q1" value="b" onchange="document.getElementById('q1-check').disabled=false">
+                    <span>Applying AI to your top 3 high-effort tasks (analysis, writing, coding)</span>
+                </label>
+                <label class="quiz-option">
+                    <input type="radio" name="q1" value="c" onchange="document.getElementById('q1-check').disabled=false">
+                    <span>Using different AI tools for every task</span>
+                </label>
+            </div>
+            <button class="quiz-button" id="q1-check" onclick="checkQuiz('q1', 'b')" disabled>Check Answer</button>
+            <div class="quiz-feedback" id="q1-feedback"></div>
+        </div>
+
+        <div class="divider thick"></div>
+
+        <div class="lesson-summary">
+            <div class="summary-title">Key Takeaways</div>
+            <ul class="summary-points">
+                <li><strong>Every role has AI opportunities.</strong> From marketing to engineering to HR, AI boosts productivity.</li>
+                <li><strong>Focus on high-effort tasks.</strong> AI saves most time on writing, analysis, and coding.</li>
+                <li><strong>AI assists, humans decide.</strong> For important decisions (hiring, strategy, critical code), use AI to recommend, you decide.</li>
+                <li><strong>Iterate and refine.</strong> First AI output is rarely perfect. Customize it for your needs.</li>
+                <li><strong>Build AI into your process.</strong> Make it a habit. Save 3-5 hours per week using AI effectively.</li>
+                <li><strong>Stay ethical.</strong> Be aware of bias, privacy, and fairness in your workflows.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>AI in Your Workflow | GenAI Academy © 2024</p>
+    </div>
+
+    <script>
+        function toggleAccordion(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.accordion-toggle');
+            header.classList.toggle('open');
+            body.classList.toggle('open');
+            if (toggle) toggle.classList.toggle('open');
+        }
+        function checkQuiz(name, correct) {
+            const selected = document.querySelector(`input[name="${name}"]:checked`);
+            const feedback = document.getElementById(`${name}-feedback`);
+            if (!selected) return;
+            feedback.classList.add('show');
+            if (selected.value === correct) {
+                feedback.classList.add('correct');
+                feedback.classList.remove('incorrect');
+                feedback.textContent = '✅ Correct! Focus on your 3 most time-consuming tasks. If you save 1 hour per task, that\'s 3 hours per week—156 hours per year!';
+            } else {
+                feedback.classList.add('incorrect');
+                feedback.classList.remove('correct');
+                feedback.textContent = '❌ Not quite. Small tasks save little time. Focus on your biggest time-sinks (analysis, writing, coding). That\'s where AI multiplies your productivity.';
+            }
+        }
+
+        function selectPersona(personaId, element) {
+            // Update selected persona
+            document.querySelectorAll('.persona-card').forEach(card => card.classList.remove('selected'));
+            element.classList.add('selected');
+
+            // Show relevant content
+            document.querySelectorAll('.persona-content').forEach(content => content.classList.remove('show'));
+            document.getElementById(`persona-${personaId}`).classList.add('show');
+        }
+    </script>
+</body>
+</html>

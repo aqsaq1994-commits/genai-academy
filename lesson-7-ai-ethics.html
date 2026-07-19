@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Ethics - GenAI Academy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --slate-dark: #1A202C;
+            --slate-light: #2D3748;
+            --teal: #06B6D4;
+            --teal-light: #22D3EE;
+            --cream: #F8F9FA;
+            --gray-border: #E2E8F0;
+            --text-secondary: #64748B;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'IBM Plex Sans', 'Segoe UI', sans-serif;
+            background: var(--cream);
+            color: var(--slate-dark);
+            line-height: 1.6;
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            background: linear-gradient(135deg, var(--slate-dark) 0%, var(--slate-light) 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-back {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .header-back:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--slate-dark), var(--teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--gray-border);
+            margin: 3rem 0;
+        }
+
+        .divider.thick {
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, var(--teal) 50%, transparent 100%);
+            margin: 3.5rem 0;
+        }
+
+        .learning-zone {
+            background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .learning-zone-icon {
+            font-size: 2.5rem;
+            flex-shrink: 0;
+        }
+
+        .learning-zone h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 2rem 0 1.5rem 0;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--slate-dark);
+        }
+
+        .section-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--teal);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .accordion-block {
+            background: white;
+            border: 1px solid var(--gray-border);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .accordion-header {
+            background: linear-gradient(135deg, #F8F9FA 0%, #F0F4F8 100%);
+            padding: 1.5rem;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: var(--slate-dark);
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .accordion-header:hover {
+            background: linear-gradient(135deg, #F0F4F8 0%, #E0E9F0 100%);
+            border-bottom-color: var(--teal);
+        }
+
+        .accordion-header.open {
+            background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
+            color: white;
+            border-bottom-color: var(--teal-light);
+        }
+
+        .accordion-toggle {
+            transition: transform 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .accordion-toggle.open {
+            transform: rotate(180deg);
+        }
+
+        .accordion-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 1.5rem;
+        }
+
+        .accordion-body.open {
+            max-height: 2000px;
+            padding: 1.5rem;
+        }
+
+        .principle-card {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+            border-left: 4px solid var(--teal);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .principle-card strong {
+            color: var(--teal);
+        }
+
+        .concern-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .concern-card {
+            background: white;
+            border-left: 4px solid var(--warning);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .concern-card strong {
+            color: var(--warning);
+        }
+
+        .quiz-container {
+            background: #F8F9FA;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid var(--teal);
+        }
+
+        .quiz-question {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--slate-dark);
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid var(--gray-border);
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--teal);
+        }
+
+        .quiz-option input[type="radio"] {
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            accent-color: var(--teal);
+        }
+
+        .quiz-button {
+            background: var(--teal);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .quiz-button:hover:not(:disabled) {
+            background: var(--teal-light);
+        }
+
+        .quiz-button:disabled {
+            background: #CBD5E1;
+            cursor: not-allowed;
+        }
+
+        .quiz-feedback {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+        }
+
+        .quiz-feedback.correct {
+            background: #ECFDF5;
+            color: #065F46;
+            border-left: 4px solid var(--success);
+        }
+
+        .quiz-feedback.incorrect {
+            background: #FEF2F2;
+            color: #7F1D1D;
+            border-left: 4px solid var(--error);
+        }
+
+        .lesson-summary {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+            border-left: 4px solid var(--teal);
+            padding: 2rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+
+        .summary-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--slate-dark);
+            margin-bottom: 1rem;
+        }
+
+        .summary-points {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .summary-points li {
+            padding-left: 2rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .summary-points li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--teal);
+            font-weight: 700;
+        }
+
+        .footer {
+            background: var(--slate-dark);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-top: 5rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">
+            <span>🤖</span>
+            <span>GenAI Academy</span>
+        </div>
+        <a href="index.html" class="header-back">← Back to Course</a>
+    </div>
+
+    <div class="container">
+        <div class="hero">
+            <h1>AI Ethics & Responsible Use</h1>
+            <p>Use AI responsibly. Understand bias, fairness, transparency, and the impact of your choices.</p>
+        </div>
+
+        <div class="divider thick"></div>
+
+        <div class="learning-zone">
+            <div class="learning-zone-icon">⚖️</div>
+            <div>
+                <h3>AI Comes With Responsibility</h3>
+                <p>As AI becomes more powerful, using it ethically and responsibly is crucial. Understand the implications of your AI usage.</p>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section-header">
+            <div class="section-icon">🎓</div>
+            <span>Purpose</span>
+        </div>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">This lesson covers the ethical dimensions of AI. We'll explore bias, copyright concerns, fairness, transparency, and how to use AI responsibly in your organization. Understanding these issues helps you make better decisions and avoid unintended harm.</p>
+
+        <div class="divider"></div>
+
+        <div class="section-header">
+            <div class="section-icon">✓</div>
+            <span>Lesson Objectives</span>
+        </div>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; color: var(--text-secondary);">
+            <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Understand bias in AI systems and its consequences</span></li>
+            <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Learn about copyright and plagiarism concerns with AI</span></li>
+            <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Understand transparency and disclosure requirements</span></li>
+            <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Learn best practices for responsible AI usage</span></li>
+        </ul>
+
+        <div class="divider thick"></div>
+
+        <!-- ACCORDION 1: BIAS -->
+        <div class="accordion-block">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span>Bias in AI Systems</span>
+                <span class="accordion-toggle">▼</span>
+            </div>
+            <div class="accordion-body">
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"><strong>What is bias?</strong> AI models trained on biased data will make biased decisions. This can perpetuate or amplify existing inequalities.</p>
+                
+                <div class="concern-grid">
+                    <div class="concern-card">
+                        <p><strong>Gender Bias</strong><br/>AI trained on male-dominated data may favor men in hiring, lending, or healthcare decisions.</p>
+                    </div>
+                    <div class="concern-card">
+                        <p><strong>Racial Bias</strong><br/>Historical data with racial disparities can lead to discriminatory AI systems.</p>
+                    </div>
+                    <div class="concern-card">
+                        <p><strong>Age Bias</strong><br/>AI may discriminate based on age in hiring, insurance, or credit decisions.</p>
+                    </div>
+                    <div class="concern-card">
+                        <p><strong>Language Bias</strong><br/>AI trained on English performs worse for other languages and dialects.</p>
+                    </div>
+                </div>
+
+                <p style="color: var(--text-secondary); margin-top: 1.5rem; margin-bottom: 1rem;"><strong>Real-world impact:</strong></p>
+                <ul style="list-style: disc; margin-left: 2rem; color: var(--text-secondary);">
+                    <li>Amazon's hiring AI was biased against women</li>
+                    <li>Facial recognition works worse for people with darker skin</li>
+                    <li>Healthcare algorithms were biased against Black patients</li>
+                </ul>
+
+                <div style="background: #E0F2FE; border-left: 4px solid var(--teal); padding: 1rem; border-radius: 8px; margin-top: 1.5rem;">
+                    <p style="margin: 0; color: var(--slate-dark);"><strong>✓ What to do:</strong> Be aware of bias risk. Question AI recommendations in high-stakes decisions. Audit AI systems regularly. Use diverse training data.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACCORDION 2: COPYRIGHT -->
+        <div class="accordion-block">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span>Copyright & Plagiarism</span>
+                <span class="accordion-toggle">▼</span>
+            </div>
+            <div class="accordion-body">
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"><strong>The Issue:</strong> AI models are trained on copyrighted material scraped from the internet. When AI generates text, is it plagiarism?</p>
+                
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;"><strong>Current situation (as of 2024):</strong></p>
+                <ul style="list-style: disc; margin-left: 2rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+                    <li>AI is trained on copyrighted works without explicit permission</li>
+                    <li>AI-generated text is not automatically copyrighted</li>
+                    <li>If AI output closely matches copyrighted work, it could be plagiarism</li>
+                    <li>Legal cases are ongoing (authors suing OpenAI, Google, etc.)</li>
+                </ul>
+
+                <div class="concern-card">
+                    <p><strong>⚠️ The Concern:</strong> If you use AI-generated content and present it as your own without disclosure, you may be passing off copyright-infringing content.</p>
+                </div>
+
+                <p style="color: var(--text-secondary); margin-top: 1.5rem; margin-bottom: 1rem;"><strong>Safe practices:</strong></p>
+                <ul style="list-style: disc; margin-left: 2rem; color: var(--text-secondary);">
+                    <li>Use AI as a starting point for editing, not final output</li>
+                    <li>Substantially rewrite AI-generated content</li>
+                    <li>Disclose AI usage in your work</li>
+                    <li>For published work, check publisher guidelines on AI usage</li>
+                    <li>Never pass off AI content as your own original creation</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ACCORDION 3: TRANSPARENCY -->
+        <div class="accordion-block">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span>Transparency & Disclosure</span>
+                <span class="accordion-toggle">▼</span>
+            </div>
+            <div class="accordion-body">
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"><strong>When must you disclose AI usage?</strong></p>
+                
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;"><strong>HIGH disclosure priority:</strong></p>
+                <ul style="list-style: disc; margin-left: 2rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+                    <li><strong>Academic writing:</strong> Disclosing AI usage is becoming required</li>
+                    <li><strong>Professional communication:</strong> Business emails, proposals if it's AI-generated</li>
+                    <li><strong>Published content:</strong> Blog posts, articles, news</li>
+                    <li><strong>Legal/Medical:</strong> High-stakes decisions must involve human review, not just AI</li>
+                </ul>
+
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;"><strong>LOWER disclosure priority:</strong></p>
+                <ul style="list-style: disc; margin-left: 2rem; color: var(--text-secondary);">
+                    <li>Personal use (brainstorming for yourself)</li>
+                    <li>Internal work that won't be shared publicly</li>
+                    <li>Using AI for analysis or research (not AI-generated output)</li>
+                </ul>
+
+                <div style="background: #E0F2FE; border-left: 4px solid var(--teal); padding: 1rem; border-radius: 8px; margin-top: 1.5rem;">
+                    <p style="margin: 0; color: var(--slate-dark);"><strong>💡 Best Practice:</strong> Default to transparency. If in doubt, disclose AI usage. It builds trust and sets good expectations.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACCORDION 4: FAIRNESS & ACCOUNTABILITY -->
+        <div class="accordion-block">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span>Fairness & Accountability</span>
+                <span class="accordion-toggle">▼</span>
+            </div>
+            <div class="accordion-body">
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"><strong>AI should be fair and accountable.</strong> If AI makes a decision that affects people, someone should be responsible.</p>
+                
+                <div class="principle-card">
+                    <p><strong>Fairness principle:</strong> AI systems should treat all groups fairly. Watch for disparate impact—outcomes that disadvantage certain groups even if not intentional.</p>
+                </div>
+
+                <div class="principle-card">
+                    <p><strong>Accountability principle:</strong> Humans should make final decisions on consequential matters. Don't let AI decide alone on hiring, loans, criminal justice, or medical treatment.</p>
+                </div>
+
+                <div class="principle-card">
+                    <p><strong>Explainability:</strong> If AI makes an important decision, you should be able to explain why. If you can't, reconsider using AI for that decision.</p>
+                </div>
+
+                <p style="color: var(--text-secondary); margin-top: 1.5rem; margin-bottom: 1rem;"><strong>Practical checklist:</strong></p>
+                <ul style="list-style: disc; margin-left: 2rem; color: var(--text-secondary);">
+                    <li>Who is impacted by this AI decision?</li>
+                    <li>Could this decision harm a specific group?</li>
+                    <li>Is a human reviewing the AI recommendation?</li>
+                    <li>Can I explain why the AI made this choice?</li>
+                    <li>Is there an appeals process if someone disagrees?</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ACCORDION 5: ENVIRONMENTAL IMPACT -->
+        <div class="accordion-block">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span>Environmental Impact</span>
+                <span class="accordion-toggle">▼</span>
+            </div>
+            <div class="accordion-body">
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"><strong>Training large AI models uses significant energy.</strong> This has environmental implications.</p>
+                
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;"><strong>The numbers:</strong></p>
+                <ul style="list-style: disc; margin-left: 2rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+                    <li>Training GPT-3 used ~1,287 MWh of electricity</li>
+                    <li>That's equivalent to ~130 homes' yearly electricity usage</li>
+                    <li>Carbon footprint: significant, though improving</li>
+                </ul>
+
+                <div class="concern-card">
+                    <p><strong>⚠️ Consider:</strong> Using AI services has a carbon footprint. Some providers use renewable energy, others don't. It's not harmful per se, but worth considering for large-scale applications.</p>
+                </div>
+
+                <p style="color: var(--text-secondary); margin-top: 1.5rem; margin-bottom: 1rem;"><strong>What you can do:</strong></p>
+                <ul style="list-style: disc; margin-left: 2rem; color: var(--text-secondary);">
+                    <li>Use efficient models (Claude Haiku, GPT-3.5) when appropriate</li>
+                    <li>Batch requests to reduce API calls</li>
+                    <li>Support providers using renewable energy</li>
+                    <li>Don't overuse AI for trivial tasks</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ACCORDION 6: BEST PRACTICES -->
+        <div class="accordion-block">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span>Responsible AI Best Practices</span>
+                <span class="accordion-toggle">▼</span>
+            </div>
+            <div class="accordion-body">
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"><strong>How to use AI responsibly in your work:</strong></p>
+                
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--gray-border);">
+                    <ol style="list-style-position: inside; color: var(--text-secondary); line-height: 2;">
+                        <li><strong>Audit for bias.</strong> Test AI on diverse groups. Watch for disparate impact.</li>
+                        <li><strong>Keep humans in the loop.</strong> For important decisions, AI recommends; human decides.</li>
+                        <li><strong>Disclose AI usage.</strong> Be transparent about where AI was used.</li>
+                        <li><strong>Protect privacy.</strong> Don't put confidential data in free tiers.</li>
+                        <li><strong>Verify facts.</strong> AI can hallucinate. Check critical information.</li>
+                        <li><strong>Be fair.</strong> Don't use AI to discriminate. Actively look for bias.</li>
+                        <li><strong>Educate your team.</strong> Make sure everyone understands AI limitations and ethics.</li>
+                        <li><strong>Have a policy.</strong> Establish organizational guidelines for AI usage.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider thick"></div>
+
+        <div class="quiz-container">
+            <div class="quiz-question">✏️ Check Your Understanding</div>
+            <div style="font-size: 1rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--slate-dark);">Your company uses AI to screen job applicants. The system recommends rejecting women at 2x the rate of men. What should you do?</div>
+            <div class="quiz-options">
+                <label class="quiz-option">
+                    <input type="radio" name="q1" value="a" onchange="document.getElementById('q1-check').disabled=false">
+                    <span>Use it anyway—AI is objective</span>
+                </label>
+                <label class="quiz-option">
+                    <input type="radio" name="q1" value="b" onchange="document.getElementById('q1-check').disabled=false">
+                    <span>Stop using AI for hiring and audit for bias; then rebuild with better data</span>
+                </label>
+                <label class="quiz-option">
+                    <input type="radio" name="q1" value="c" onchange="document.getElementById('q1-check').disabled=false">
+                    <span>Accept the bias as reflecting market reality</span>
+                </label>
+            </div>
+            <button class="quiz-button" id="q1-check" onclick="checkQuiz('q1', 'b')" disabled>Check Answer</button>
+            <div class="quiz-feedback" id="q1-feedback"></div>
+        </div>
+
+        <div class="divider thick"></div>
+
+        <div class="lesson-summary">
+            <div class="summary-title">Key Takeaways</div>
+            <ul class="summary-points">
+                <li><strong>Bias is real.</strong> AI trained on biased data perpetuates bias. Audit and test for disparate impact.</li>
+                <li><strong>Disclose AI usage.</strong> Especially for published content, academic work, and professional communication.</li>
+                <li><strong>Don't pass off AI work as your own.</strong> Substantially rewrite and credit AI assistance.</li>
+                <li><strong>Keep humans in control.</strong> For high-stakes decisions (hiring, medical, legal), AI assists; humans decide.</li>
+                <li><strong>Protect privacy.</strong> Never paste confidential data into free tiers.</li>
+                <li><strong>Fairness matters.</strong> Design AI systems to be fair across all groups.</li>
+                <li><strong>Transparency builds trust.</strong> Be open about AI's role in your work.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>AI Ethics | GenAI Academy © 2024</p>
+    </div>
+
+    <script>
+        function toggleAccordion(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.accordion-toggle');
+            
+            header.classList.toggle('open');
+            body.classList.toggle('open');
+            
+            if (toggle) {
+                toggle.classList.toggle('open');
+            }
+        }
+
+        function checkQuiz(name, correct) {
+            const selected = document.querySelector(`input[name="${name}"]:checked`);
+            const feedback = document.getElementById(`${name}-feedback`);
+            
+            if (!selected) return;
+            
+            feedback.classList.add('show');
+            if (selected.value === correct) {
+                feedback.classList.add('correct');
+                feedback.classList.remove('incorrect');
+                feedback.textContent = '✅ Correct! A 2x disparity is a red flag for bias. You must stop using the AI, audit why this is happening, and rebuild with better training data that represents both men and women equally.';
+            } else {
+                feedback.classList.add('incorrect');
+                feedback.classList.remove('correct');
+                feedback.textContent = '❌ Not quite. A 2x disparity in outcomes is evidence of gender bias. This is unfair, potentially illegal, and reflects problems with the training data or system design. Stop using it and fix it.';
+            }
+        }
+    </script>
+</body>
+</html>

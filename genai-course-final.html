@@ -1,0 +1,1896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GenAI Academy - Interactive Course</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --slate-dark: #1A202C;
+            --slate-light: #2D3748;
+            --teal: #06B6D4;
+            --teal-light: #22D3EE;
+            --cream: #F8F9FA;
+            --gray-border: #E2E8F0;
+            --text-secondary: #64748B;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'IBM Plex Sans', 'Segoe UI', sans-serif;
+            background: var(--cream);
+            color: var(--slate-dark);
+            line-height: 1.6;
+        }
+
+        /* HEADER */
+        .header {
+            position: sticky;
+            top: 0;
+            background: linear-gradient(135deg, var(--slate-dark) 0%, var(--slate-light) 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-progress {
+            font-size: 0.9rem;
+            background: rgba(34, 211, 238, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+
+        /* MAIN CONTAINER */
+        .container {
+            max-width: 1000px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        /* HERO */
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--slate-dark), var(--teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .hero-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .meta-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border-top: 3px solid var(--teal);
+        }
+
+        .meta-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .meta-value {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--slate-dark);
+        }
+
+        /* DIVIDERS */
+        .divider {
+            height: 1px;
+            background: var(--gray-border);
+            margin: 3rem 0;
+        }
+
+        .divider.thick {
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, var(--teal) 50%, transparent 100%);
+            margin: 3.5rem 0;
+        }
+
+        .divider-label {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 3rem 0;
+            position: relative;
+            padding: 0 1rem;
+        }
+
+        .divider-label::before,
+        .divider-label::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: calc(50% - 3rem);
+            height: 1px;
+            background: var(--gray-border);
+        }
+
+        .divider-label::before {
+            left: 0;
+        }
+
+        .divider-label::after {
+            right: 0;
+        }
+
+        /* COURSE INTRO SECTIONS */
+        .intro-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .intro-section h2 {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .intro-section h2 span {
+            color: var(--text-secondary);
+        }
+
+        .intro-section h2 .toggle {
+            margin-left: auto;
+            transition: transform 0.3s ease;
+            font-weight: 700;
+            color: var(--teal);
+        }
+
+        .intro-section h2 .toggle.open {
+            transform: rotate(0deg);
+        }
+
+        .intro-section-content {
+            display: none;
+            color: var(--text-secondary);
+        }
+
+        .intro-section-content.open {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* LESSON TABS */
+        .lesson-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 0;
+            border-bottom: 2px solid var(--gray-border);
+            background: white;
+            border-radius: 12px 12px 0 0;
+            padding: 0 2rem;
+        }
+
+        .lesson-tab-btn {
+            background: none;
+            border: none;
+            padding: 1.25rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .lesson-tab-btn.active {
+            color: var(--teal);
+            border-bottom-color: var(--teal);
+        }
+
+        .lesson-tab-btn:hover:not(.active) {
+            color: var(--slate-dark);
+        }
+
+        /* TAB CONTENT */
+        .lesson-tab-content {
+            display: none;
+            background: white;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .lesson-tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .lesson-body {
+            padding: 2rem;
+        }
+
+        /* LEARNING ZONE */
+        .learning-zone {
+            background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .learning-zone-icon {
+            font-size: 2.5rem;
+            flex-shrink: 0;
+        }
+
+        .learning-zone h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .learning-zone p {
+            margin: 0;
+            font-size: 0.95rem;
+            opacity: 0.95;
+        }
+
+        /* SECTION HEADER */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 2rem 0 1.5rem 0;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--slate-dark);
+        }
+
+        .section-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--teal);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        /* FLASHCARD STYLES */
+        .flashcard-wrapper {
+            perspective: 1000px;
+            margin: 2rem 0;
+        }
+
+        .flashcard-container {
+            height: 280px;
+            margin-bottom: 2rem;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
+            color: white;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+            color: var(--slate-dark);
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-term {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .flashcard-hint {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        .flashcard-definition {
+            font-size: 1rem;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .flashcard-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--gray-border);
+        }
+
+        .flashcard-counter {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .flashcard-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .flashcard-btn {
+            background: var(--teal);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .flashcard-btn:hover:not(:disabled) {
+            background: var(--teal-light);
+            transform: translateY(-2px);
+        }
+
+        .flashcard-btn:disabled {
+            background: #CBD5E1;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* QUIZ */
+        .quiz-container {
+            background: #F8F9FA;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid var(--teal);
+        }
+
+        .quiz-question {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--slate-dark);
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid var(--gray-border);
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--teal);
+        }
+
+        .quiz-option input[type="radio"] {
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            accent-color: var(--teal);
+        }
+
+        .quiz-option span {
+            flex: 1;
+        }
+
+        .quiz-button {
+            background: var(--teal);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .quiz-button:hover:not(:disabled) {
+            background: var(--teal-light);
+        }
+
+        .quiz-button:disabled {
+            background: #CBD5E1;
+            cursor: not-allowed;
+        }
+
+        .quiz-feedback {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+        }
+
+        .quiz-feedback.correct {
+            background: #ECFDF5;
+            color: #065F46;
+            border-left: 4px solid var(--success);
+        }
+
+        .quiz-feedback.incorrect {
+            background: #FEF2F2;
+            color: #7F1D1D;
+            border-left: 4px solid var(--error);
+        }
+
+        /* SUMMARY */
+        .lesson-summary {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+            border-left: 4px solid var(--teal);
+            padding: 2rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+
+        .summary-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--slate-dark);
+            margin-bottom: 1rem;
+        }
+
+        .summary-points {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .summary-points li {
+            padding-left: 2rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .summary-points li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--teal);
+            font-weight: 700;
+        }
+
+        /* FOOTER */
+        .footer {
+            background: var(--slate-dark);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-top: 5rem;
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+
+            .lesson-tabs {
+                padding: 0 1rem;
+            }
+
+            .lesson-tab-btn {
+                padding: 1rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .flashcard-face {
+                padding: 1.5rem;
+            }
+
+            .flashcard-term {
+                font-size: 1.25rem;
+            }
+
+            .flashcard-definition {
+                font-size: 0.95rem;
+            }
+
+            .flashcard-container {
+                height: 240px;
+            }
+        }
+
+        /* ACCORDION BLOCK STYLES */
+        .accordion-block {
+            background: white;
+            border: 1px solid var(--gray-border);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .accordion-header {
+            background: linear-gradient(135deg, #F8F9FA 0%, #F0F4F8 100%);
+            padding: 1.5rem;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: var(--slate-dark);
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .accordion-header:hover {
+            background: linear-gradient(135deg, #F0F4F8 0%, #E0E9F0 100%);
+            border-bottom-color: var(--teal);
+        }
+
+        .accordion-header.open {
+            background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
+            color: white;
+            border-bottom-color: var(--teal-light);
+        }
+
+        .accordion-toggle {
+            transition: transform 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .accordion-toggle.open {
+            transform: rotate(180deg);
+        }
+
+        .accordion-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 1.5rem;
+        }
+
+        .accordion-body.open {
+            max-height: 2000px;
+            padding: 1.5rem;
+        }
+
+        /* ACTIVITY CARD STYLES */
+        .activity-card {
+            background: white;
+            border: 2px solid var(--gray-border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .activity-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--slate-dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .activity-number {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .activity-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .activity-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .activity-label {
+            font-weight: 600;
+            color: var(--slate-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .activity-textarea {
+            font-family: inherit;
+            padding: 1rem;
+            border: 2px solid var(--gray-border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            resize: vertical;
+            min-height: 100px;
+            transition: border-color 0.3s ease;
+        }
+
+        .activity-textarea:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        .activity-button {
+            background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .activity-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+        }
+
+        .activity-button:active {
+            transform: translateY(0);
+        }
+
+        .activity-result {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+            border: 2px solid var(--teal);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            display: none;
+        }
+
+        .activity-result.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .result-title {
+            font-weight: 700;
+            color: var(--teal);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .result-content {
+            color: var(--slate-dark);
+            line-height: 1.7;
+        }
+
+        .result-content strong {
+            color: var(--teal);
+        }
+
+        .activity-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .activity-option-label {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #F8F9FA;
+            border-radius: 8px;
+            border: 2px solid var(--gray-border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .activity-option-label:hover {
+            border-color: var(--teal);
+            background: #F0F9FF;
+        }
+
+        .activity-option-label input[type="radio"] {
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            accent-color: var(--teal);
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-title">
+            <span>🤖</span>
+            <span>GenAI Academy</span>
+        </div>
+        <div class="header-progress">
+            Progress: <span id="progress">0/4</span> lessons
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+        <!-- HERO -->
+        <div class="hero">
+            <h1>Master Generative AI & Prompt Engineering</h1>
+            <p>Learn the skills every professional needs in the age of AI</p>
+            
+            <div class="hero-meta">
+                <div class="meta-card">
+                    <div class="meta-label">Duration</div>
+                    <div class="meta-value">60 min</div>
+                </div>
+                <div class="meta-card">
+                    <div class="meta-label">Level</div>
+                    <div class="meta-value">All Levels</div>
+                </div>
+                <div class="meta-card">
+                    <div class="meta-label">Format</div>
+                    <div class="meta-value">Interactive</div>
+                </div>
+                <div class="meta-card">
+                    <div class="meta-label">Topics</div>
+                    <div class="meta-value">4 Lessons</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider thick"></div>
+
+        <!-- COURSE INTRO SECTIONS -->
+        <div class="intro-section">
+            <h2 onclick="toggleIntro(this)">
+                📖 Course Overview
+                <span class="toggle">+</span>
+            </h2>
+            <div class="intro-section-content">
+                <p>This course introduces you to Generative AI and prompt engineering—the practical skills you need to work effectively with AI tools like ChatGPT, Claude, and Gemini. Whether you're a professional looking to enhance your productivity or an organization scaling AI adoption, this course gives you the foundation.</p>
+            </div>
+        </div>
+
+        <div class="intro-section">
+            <h2 onclick="toggleIntro(this)">
+                🎯 Course Objectives
+                <span class="toggle">+</span>
+            </h2>
+            <div class="intro-section-content">
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem;">
+                    <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Understand what generative AI is and how LLMs work</span></li>
+                    <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Master vocabulary essential to working with AI</span></li>
+                    <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Learn prompt engineering principles and best practices</span></li>
+                    <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Apply AI effectively and responsibly in your work</span></li>
+                    <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Understand limitations and risks of AI systems</span></li>
+                    <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Build confidence using AI tools daily</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="intro-section">
+            <h2 onclick="toggleIntro(this)">
+                👥 Who This Is For
+                <span class="toggle">+</span>
+            </h2>
+            <div class="intro-section-content">
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem;">
+                    <li><strong>Professionals</strong> looking to stay competitive in the AI era</li>
+                    <li><strong>Team leads</strong> evaluating AI tools for their teams</li>
+                    <li><strong>Content creators</strong> wanting to boost productivity</li>
+                    <li><strong>Business decision-makers</strong> understanding AI capabilities</li>
+                    <li><strong>Anyone curious</strong> about how modern AI actually works</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="divider thick"></div>
+
+        <!-- LESSON TABS -->
+        <div class="lesson-tabs">
+            <button class="lesson-tab-btn active" onclick="switchTab(event, 'lesson-1')">
+                <span>📖</span>
+                <span>Lesson 1: Glossary</span>
+            </button>
+            <button class="lesson-tab-btn" onclick="switchTab(event, 'lesson-2')">
+                <span>🚀</span>
+                <span>Lesson 2: AI Fundamentals</span>
+            </button>
+            <button class="lesson-tab-btn" onclick="switchTab(event, 'lesson-3')">
+                <span>💡</span>
+                <span>Lesson 3: Prompt Engineering</span>
+            </button>
+            <button class="lesson-tab-btn" onclick="switchTab(event, 'lesson-4')">
+                <span>🎯</span>
+                <span>Lesson 4: Activities</span>
+            </button>
+        </div>
+
+        <!-- LESSON 1 TAB CONTENT -->
+        <div id="lesson-1" class="lesson-tab-content active">
+            <div class="lesson-body">
+                <div class="learning-zone">
+                    <div class="learning-zone-icon">📖</div>
+                    <div>
+                        <h3>Build Your Vocabulary</h3>
+                        <p>Understanding AI terminology builds confidence. You'll see these terms throughout the course and in real-world use.</p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section-header">
+                    <div class="section-icon">🎓</div>
+                    <span>Purpose</span>
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">Before diving into concepts, you need a shared vocabulary. This lesson introduces 10 essential AI and prompt engineering terms. Bookmark this section—you'll return to it as you learn.</p>
+
+                <div class="divider"></div>
+
+                <div class="section-header">
+                    <div class="section-icon">✓</div>
+                    <span>Lesson Objectives</span>
+                </div>
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; color: var(--text-secondary);">
+                    <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Learn 10 core AI and prompt engineering terms</span></li>
+                    <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Understand what each term means in plain language</span></li>
+                    <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>See how terms connect to real-world AI use</span></li>
+                    <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Build confidence speaking about AI concepts</span></li>
+                </ul>
+
+                <div class="divider thick"></div>
+
+                <div class="divider-label">Glossary</div>
+
+                <!-- FLASHCARD WRAPPER -->
+                <div class="flashcard-wrapper" data-current="0" data-total="10">
+                    <!-- Card 1: Generative AI -->
+                    <div class="flashcard-container">
+                        <div class="flashcard" onclick="flipFlashcard(this)">
+                            <div class="flashcard-face flashcard-front">
+                                <div class="flashcard-term">Generative AI</div>
+                                <div class="flashcard-hint">Click to reveal definition</div>
+                            </div>
+                            <div class="flashcard-face flashcard-back">
+                                <div class="flashcard-definition">AI systems that can create new content (text, images, code) based on patterns learned from training data.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: LLM -->
+                    <div class="flashcard-container">
+                        <div class="flashcard" onclick="flipFlashcard(this)">
+                            <div class="flashcard-face flashcard-front">
+                                <div class="flashcard-term">LLM<br/><span style="font-size: 0.8rem;">Large Language Model</span></div>
+                                <div class="flashcard-hint">Click to reveal definition</div>
+                            </div>
+                            <div class="flashcard-face flashcard-back">
+                                <div class="flashcard-definition">An AI model trained on massive amounts of text data to predict and generate human-like text. Examples: ChatGPT, Claude, Gemini.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Prompt -->
+                    <div class="flashcard-container">
+                        <div class="flashcard" onclick="flipFlashcard(this)">
+                            <div class="flashcard-face flashcard-front">
+                                <div class="flashcard-term">Prompt</div>
+                                <div class="flashcard-hint">Click to reveal definition</div>
+                            </div>
+                            <div class="flashcard-face flashcard-back">
+                                <div class="flashcard-definition">The input or instructions you give to an AI model. Quality prompts lead to better outputs. Your communication tool with AI.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Prompt Engineering -->
+                    <div class="flashcard-container">
+                        <div class="flashcard" onclick="flipFlashcard(this)">
+                            <div class="flashcard-face flashcard-front">
+                                <div class="flashcard-term">Prompt Engineering</div>
+                                <div class="flashcard-hint">Click to reveal definition</div>
+                            </div>
+                            <div class="flashcard-face flashcard-back">
+                                <div class="flashcard-definition">The practice of crafting effective prompts to get the best possible outputs from an AI model. How you "talk" to AI.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 5: Hallucination -->
+                    <div class="flashcard-container">
+                        <div class="flashcard" onclick="flipFlashcard(this)">
+                            <div class="flashcard-face flashcard-front">
+                                <div class="flashcard-term">Hallucination</div>
+                                <div class="flashcard-hint">Click to reveal definition</div>
+                            </div>
+                            <div class="flashcard-face flashcard-back">
+                                <div class="flashcard-definition">When an AI model generates plausible-sounding but factually false information, confident in its incorrect answer. The #1 risk of AI misuse.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 6: Context Window -->
+                    <div class="flashcard-container">
+                        <div class="flashcard" onclick="flipFlashcard(this)">
+                            <div class="flashcard-face flashcard-front">
+                                <div class="flashcard-term">Context Window</div>
+                                <div class="flashcard-hint">Click to reveal definition</div>
+                            </div>
+                            <div class="flashcard-face flashcard-back">
+                                <div class="flashcard-definition">The amount of text (in tokens/words) an AI can consider at once. Larger windows allow for longer documents.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 7: Token -->
+                    <div class="flashcard-container">
+                        <div class="flashcard" onclick="flipFlashcard(this)">
+                            <div class="flashcard-face flashcard-front">
+                                <div class="flashcard-term">Token</div>
+                                <div class="flashcard-hint">Click to reveal definition</div>
+                            </div>
+                            <div class="flashcard-face flashcard-back">
+                                <div class="flashcard-definition">A piece of text (roughly a word) that AI models process. Used to measure input/output size. One token ≈ 4 characters or 0.75 words.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 8: Fine-tuning -->
+                    <div class="flashcard-container">
+                        <div class="flashcard" onclick="flipFlashcard(this)">
+                            <div class="flashcard-face flashcard-front">
+                                <div class="flashcard-term">Fine-tuning</div>
+                                <div class="flashcard-hint">Click to reveal definition</div>
+                            </div>
+                            <div class="flashcard-face flashcard-back">
+                                <div class="flashcard-definition">Training an AI model on specific data to adapt it for a particular task or domain. Advanced customization technique.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 9: Knowledge Cutoff -->
+                    <div class="flashcard-container">
+                        <div class="flashcard" onclick="flipFlashcard(this)">
+                            <div class="flashcard-face flashcard-front">
+                                <div class="flashcard-term">Knowledge Cutoff</div>
+                                <div class="flashcard-hint">Click to reveal definition</div>
+                            </div>
+                            <div class="flashcard-face flashcard-back">
+                                <div class="flashcard-definition">The date up to which an AI model was trained. Information after this date is unknown to the model.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 10: Iteration -->
+                    <div class="flashcard-container">
+                        <div class="flashcard" onclick="flipFlashcard(this)">
+                            <div class="flashcard-face flashcard-front">
+                                <div class="flashcard-term">Iteration</div>
+                                <div class="flashcard-hint">Click to reveal definition</div>
+                            </div>
+                            <div class="flashcard-face flashcard-back">
+                                <div class="flashcard-definition">The process of refining your prompts based on feedback. First output rarely perfect—iteration is how you improve.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation -->
+                    <div class="flashcard-nav">
+                        <div class="flashcard-counter"></div>
+                        <div class="flashcard-buttons">
+                            <button class="flashcard-btn flashcard-prev" onclick="prevFlashcard(this)">← Previous</button>
+                            <button class="flashcard-btn flashcard-next" onclick="nextFlashcard(this)">Next →</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider thick"></div>
+
+                <div class="lesson-summary">
+                    <div class="summary-title">Key Takeaways</div>
+                    <ul class="summary-points">
+                        <li><strong>Generative AI creates content</strong> by learning patterns from training data.</li>
+                        <li><strong>LLMs (ChatGPT, Claude, Gemini)</strong> are AI systems trained on text to predict what comes next.</li>
+                        <li><strong>Hallucinations are real:</strong> AI can sound confident while being completely wrong.</li>
+                        <li><strong>Prompts are your interface</strong> with AI—the better your prompt, the better your results.</li>
+                        <li><strong>These 10 terms appear everywhere</strong> in AI discussions—return here as needed.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- LESSON 2 TAB CONTENT -->
+        <div id="lesson-2" class="lesson-tab-content">
+            <div class="lesson-body">
+                <div class="learning-zone">
+                    <div class="learning-zone-icon">🚀</div>
+                    <div>
+                        <h3>Building Mental Models</h3>
+                        <p>Understand the "why" behind how AI works so you can use it smarter, not just harder.</p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section-header">
+                    <div class="section-icon">🎓</div>
+                    <span>Purpose</span>
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">Most people use AI without truly understanding what's happening under the hood. This lesson demystifies generative AI by explaining the core mechanics. You'll learn what LLMs can and can't do—and why—so you can use them effectively.</p>
+
+                <div class="divider"></div>
+
+                <div class="section-header">
+                    <div class="section-icon">✓</div>
+                    <span>Lesson Objectives</span>
+                </div>
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; color: var(--text-secondary);">
+                    <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Explain what generative AI is in plain language</span></li>
+                    <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Understand how LLMs actually work (prediction-based)</span></li>
+                    <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Know the strengths and limitations of AI systems</span></li>
+                    <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Recognize hallucinations and mitigate risks</span></li>
+                </ul>
+
+                <div class="divider thick"></div>
+
+                <div class="divider-label">What is Generative AI?</div>
+
+                <!-- ACCORDION BLOCK 1 -->
+                <div class="accordion-block">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>Definition & Concept</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"><strong>Generative AI</strong> is a category of AI that can create new content based on patterns it learned from training data. If you've used ChatGPT, Claude, Gemini, DALL-E, or Midjourney—you've used generative AI.</p>
+                        <p style="color: var(--text-secondary); margin-bottom: 0;">The key word is "generate." Unlike traditional AI that classifies existing data, generative AI creates novel outputs—essays, code, images, music—that didn't exist before.</p>
+                    </div>
+                </div>
+
+                <!-- ACCORDION BLOCK 2 -->
+                <div class="accordion-block">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>Real-World Examples</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <div style="background: #E0F2FE; border-left: 4px solid var(--teal); padding: 1.5rem; border-radius: 8px;">
+                            <p style="margin: 0;"><strong>Real-world examples:</strong> ChatGPT writes emails you describe in plain English. DALL-E creates images from text descriptions. GitHub Copilot generates code suggestions. Jukebox composes music. All are generative AI.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider thick"></div>
+
+                <div class="divider-label">How LLMs Actually Work</div>
+
+                <!-- ACCORDION BLOCK 3 -->
+                <div class="accordion-block">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>The Prediction Mechanism</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"><strong>Large Language Models (LLMs)</strong> like ChatGPT and Claude work through a simple mechanism: <strong>predicting the next word.</strong></p>
+                        
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;"><strong>Here's the process:</strong></p>
+                        <ol style="list-style-position: inside; color: var(--text-secondary); margin-bottom: 0;">
+                            <li>You give the model text (a prompt)</li>
+                            <li>The model asks: "Given what came before, what word is statistically most likely to come next?"</li>
+                            <li>It picks that word and adds it to your response</li>
+                            <li>It repeats this process hundreds of times to build a complete response</li>
+                            <li>The result appears as a coherent, human-like essay</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- ACCORDION BLOCK 4 -->
+                <div class="accordion-block">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>Mental Model: Autocomplete on Steroids</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <div style="background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%); border-left: 4px solid var(--teal); padding: 1.5rem; border-radius: 8px;">
+                            <p style="margin: 0; color: var(--slate-dark);"><strong>💡 Think of it like autocomplete on your phone.</strong> LLMs are trained on billions of words from the internet, so they're phenomenally good at predicting what word comes next. This is why they sound intelligent—they're just following statistical patterns very, very well.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider thick"></div>
+
+                <div class="divider-label">Strengths & Limitations</div>
+
+                <!-- ACCORDION BLOCK 5 -->
+                <div class="accordion-block">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>✅ What LLMs Excel At</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <ul style="list-style: disc; margin-left: 2rem; color: var(--text-secondary);">
+                            <li>Summarizing text quickly</li>
+                            <li>Explaining concepts clearly</li>
+                            <li>Brainstorming creative ideas</li>
+                            <li>Drafting emails, code, content</li>
+                            <li>Finding patterns in data</li>
+                            <li>Translating languages</li>
+                            <li>Creative writing & storytelling</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- ACCORDION BLOCK 6 -->
+                <div class="accordion-block">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>⚠️ What LLMs Struggle With</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <ul style="list-style: disc; margin-left: 2rem; color: var(--text-secondary);">
+                            <li>Real-time information</li>
+                            <li>Complex math & calculations</li>
+                            <li>Proprietary data they weren't trained on</li>
+                            <li>Formal logic reasoning</li>
+                            <li>Remembering old conversations</li>
+                            <li>Knowing when they're wrong</li>
+                            <li>Events after their training date</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- ACCORDION BLOCK 7 -->
+                <div class="accordion-block">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>🚨 The Hallucination Problem</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <div style="background: #FEF3C7; border-left: 4px solid var(--warning); padding: 1.5rem; border-radius: 8px;">
+                            <p style="margin: 0;"><strong>⚠️ Sometimes LLMs generate plausible-sounding but completely false information.</strong> They're not trying to deceive—they're just following the "predict the next word" pattern even when they don't actually know the answer. <strong>Always verify important facts independently.</strong></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider thick"></div>
+
+                <div class="quiz-container">
+                    <div class="quiz-question">✏️ Check Your Understanding</div>
+                    <div style="font-size: 1rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--slate-dark);">What is the core mechanism that makes LLMs work?</div>
+                    <div class="quiz-options">
+                        <label class="quiz-option">
+                            <input type="radio" name="q1" value="a" onchange="document.getElementById('q1-check').disabled=false">
+                            <span>They retrieve exact matches from their training data</span>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q1" value="b" onchange="document.getElementById('q1-check').disabled=false">
+                            <span>They predict statistically likely next words based on patterns</span>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q1" value="c" onchange="document.getElementById('q1-check').disabled=false">
+                            <span>They search the internet in real-time for answers</span>
+                        </label>
+                    </div>
+                    <button class="quiz-button" id="q1-check" onclick="checkQuiz('q1', 'b')" disabled>Check Answer</button>
+                    <div class="quiz-feedback" id="q1-feedback"></div>
+                </div>
+
+                <div class="divider thick"></div>
+
+                <div class="lesson-summary">
+                    <div class="summary-title">Key Takeaways</div>
+                    <ul class="summary-points">
+                        <li><strong>Generative AI creates new content</strong> by learning patterns from training data.</li>
+                        <li><strong>LLMs work through prediction:</strong> they guess the next word based on what came before, repeatedly.</li>
+                        <li><strong>Strengths:</strong> fast, creative, pattern-matching. <strong>Weaknesses:</strong> no real-time data, can hallucinate, not truly reasoning.</li>
+                        <li><strong>Hallucinations are a real risk:</strong> always verify critical information.</li>
+                        <li><strong>Your job:</strong> know what you're using AI for and verify results appropriately.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- LESSON 3 TAB CONTENT -->
+        <div id="lesson-3" class="lesson-tab-content">
+            <div class="lesson-body">
+                <div class="learning-zone">
+                    <div class="learning-zone-icon">💡</div>
+                    <div>
+                        <h3>Master Prompt & Context Engineering</h3>
+                        <p>Learn the techniques that separate good AI users from great ones. From basics to advanced strategies.</p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section-header">
+                    <div class="section-icon">🎓</div>
+                    <span>Purpose</span>
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">The quality of your AI output depends entirely on the quality of your input. This lesson teaches you how to craft prompts that get results, and how to manage context effectively. You'll learn proven frameworks and techniques used by AI professionals.</p>
+
+                <div class="divider"></div>
+
+                <div class="section-header">
+                    <div class="section-icon">✓</div>
+                    <span>Lesson Objectives</span>
+                </div>
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; color: var(--text-secondary);">
+                    <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Understand the fundamentals of effective prompting</span></li>
+                    <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Learn the CLEAR framework for prompt engineering</span></li>
+                    <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Master context management strategies</span></li>
+                    <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Apply advanced techniques like chain-of-thought and role-playing</span></li>
+                </ul>
+
+                <div class="divider thick"></div>
+
+                <div class="divider-label">Prompt Engineering Basics</div>
+
+                <!-- ACCORDION BLOCK 1 -->
+                <div class="accordion-block">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>What Makes a Good Prompt?</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">A good prompt has four key elements:</p>
+                        <ul style="list-style: disc; margin-left: 2rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+                            <li><strong>Clarity</strong> - Be specific and unambiguous</li>
+                            <li><strong>Context</strong> - Provide relevant background information</li>
+                            <li><strong>Constraints</strong> - Set expectations (length, format, tone)</li>
+                            <li><strong>Examples</strong> - Show what you want with examples</li>
+                        </ul>
+                        <div style="background: #E0F2FE; border-left: 4px solid var(--teal); padding: 1rem; border-radius: 8px;">
+                            <p style="margin: 0; color: var(--slate-dark);"><strong>Bad:</strong> "Write about AI" | <strong>Good:</strong> "Write a 200-word explanation of how LLMs predict text, targeting non-technical professionals."</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACCORDION BLOCK 2 -->
+                <div class="accordion-block">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>The CLEAR Framework</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"><strong>A proven framework for crafting effective prompts:</strong></p>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div style="background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%); padding: 1rem; border-radius: 8px; border-left: 4px solid var(--teal);">
+                                <p style="margin: 0; color: var(--slate-dark);"><strong style="color: var(--teal);">C - Context</strong><br/>Provide background and situation</p>
+                            </div>
+                            <div style="background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%); padding: 1rem; border-radius: 8px; border-left: 4px solid var(--teal);">
+                                <p style="margin: 0; color: var(--slate-dark);"><strong style="color: var(--teal);">L - Language</strong><br/>Set the tone and style (formal, casual, technical)</p>
+                            </div>
+                            <div style="background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%); padding: 1rem; border-radius: 8px; border-left: 4px solid var(--teal);">
+                                <p style="margin: 0; color: var(--slate-dark);"><strong style="color: var(--teal);">E - Examples</strong><br/>Show 1-2 examples of desired output</p>
+                            </div>
+                            <div style="background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%); padding: 1rem; border-radius: 8px; border-left: 4px solid var(--teal);">
+                                <p style="margin: 0; color: var(--slate-dark);"><strong style="color: var(--teal);">A - Audience</strong><br/>Specify who the output is for</p>
+                            </div>
+                            <div style="background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%); padding: 1rem; border-radius: 8px; border-left: 4px solid var(--teal);">
+                                <p style="margin: 0; color: var(--slate-dark);"><strong style="color: var(--teal);">R - Result</strong><br/>Be clear about what you want (format, length, details)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACCORDION BLOCK 3 -->
+                <div class="accordion-block">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>Iteration: The Key to Better Results</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Rarely does the first prompt produce perfect results. The secret to great AI outputs is <strong>iteration:</strong></p>
+                        <ol style="list-style-position: inside; color: var(--text-secondary);">
+                            <li><strong>Get initial output</strong> from your first prompt</li>
+                            <li><strong>Evaluate</strong> - What's good? What's missing?</li>
+                            <li><strong>Refine</strong> your prompt based on feedback</li>
+                            <li><strong>Repeat</strong> until you get the result you want</li>
+                        </ol>
+                        <div style="background: #FEF3C7; border-left: 4px solid var(--warning); padding: 1rem; border-radius: 8px; margin-top: 1.5rem;">
+                            <p style="margin: 0;"><strong>Pro Tip:</strong> Use follow-up prompts like "Make this more concise" or "Add more examples" instead of rewriting from scratch.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider thick"></div>
+
+                <div class="divider-label">Context Engineering</div>
+
+                <!-- ACCORDION BLOCK 4 -->
+                <div class="accordion-block">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>Understanding Context Windows</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Every LLM has a <strong>context window</strong> - the maximum amount of text it can process at once.</p>
+                        <ul style="list-style: disc; margin-left: 2rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+                            <li><strong>Claude 3 Opus:</strong> 200K tokens (≈150,000 words)</li>
+                            <li><strong>ChatGPT-4:</strong> 128K tokens (≈96,000 words)</li>
+                            <li><strong>Gemini Pro:</strong> 32K tokens (≈24,000 words)</li>
+                        </ul>
+                        <div style="background: #E0F2FE; border-left: 4px solid var(--teal); padding: 1rem; border-radius: 8px;">
+                            <p style="margin: 0; color: var(--slate-dark);"><strong>Impact:</strong> Larger context windows let you paste full documents, conversations, or codebases for AI to analyze.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACCORDION BLOCK 5 -->
+                <div class="accordion-block">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>Effective Context Management</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"><strong>Strategies to manage context effectively:</strong></p>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div style="background: #F8F9FA; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--teal);">
+                                <p style="margin: 0; color: var(--slate-dark);"><strong>1. Prioritize Information</strong><br/>Put the most important information first (recency matters)</p>
+                            </div>
+                            <div style="background: #F8F9FA; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--teal);">
+                                <p style="margin: 0; color: var(--slate-dark);"><strong>2. Summarize When Needed</strong><br/>Condense long documents to key points</p>
+                            </div>
+                            <div style="background: #F8F9FA; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--teal);">
+                                <p style="margin: 0; color: var(--slate-dark);"><strong>3. Use Clear Markers</strong><br/>Use headers, bullet points, and dividers for structure</p>
+                            </div>
+                            <div style="background: #F8F9FA; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--teal);">
+                                <p style="margin: 0; color: var(--slate-dark);"><strong>4. Remove Noise</strong><br/>Cut irrelevant information to save context space</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider thick"></div>
+
+                <div class="divider-label">Advanced Techniques</div>
+
+                <!-- ACCORDION BLOCK 6 -->
+                <div class="accordion-block">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>Chain-of-Thought Prompting</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"><strong>Ask the AI to "think through" the problem step-by-step.</strong></p>
+                        <div style="background: #E0F2FE; border-left: 4px solid var(--teal); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                            <p style="margin: 0; color: var(--slate-dark);"><strong>Example:</strong> Instead of "Is Claude a good choice for data analysis?", ask "Walk through the strengths and limitations of Claude for data analysis tasks, then recommend if it's a good fit."</p>
+                        </div>
+                        <p style="color: var(--text-secondary);"><strong>Why it works:</strong> Forces the AI to reason through each step, leading to more thoughtful and accurate answers.</p>
+                    </div>
+                </div>
+
+                <!-- ACCORDION BLOCK 7 -->
+                <div class="accordion-block">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>Role-Playing & Persona-Based Prompts</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"><strong>Give the AI a role or persona to adopt.</strong></p>
+                        <div style="background: #E0F2FE; border-left: 4px solid var(--teal); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                            <p style="margin: 0; color: var(--slate-dark);"><strong>Example:</strong> "Act as a technical writer explaining machine learning to non-technical business stakeholders. Use analogies and avoid jargon."</p>
+                        </div>
+                        <p style="color: var(--text-secondary);"><strong>Why it works:</strong> Personas help AI match tone, depth, and style to your needs more effectively.</p>
+                    </div>
+                </div>
+
+                <!-- ACCORDION BLOCK 8 -->
+                <div class="accordion-block">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>Few-Shot Learning</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"><strong>Provide examples of the pattern you want the AI to follow.</strong></p>
+                        <div style="background: #E0F2FE; border-left: 4px solid var(--teal); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                            <p style="margin: 0; color: var(--slate-dark);"><strong>Example:</strong> Show 2-3 examples of customer feedback with sentiment labels (Positive/Negative/Neutral), then ask the AI to label new feedback in the same format.</p>
+                        </div>
+                        <p style="color: var(--text-secondary);"><strong>Why it works:</strong> Seeing examples helps the AI understand your exact expectations for format, tone, and output.</p>
+                    </div>
+                </div>
+
+                <div class="divider thick"></div>
+
+                <div class="quiz-container">
+                    <div class="quiz-question">✏️ Check Your Understanding</div>
+                    <div style="font-size: 1rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--slate-dark);">What does the "L" in the CLEAR framework stand for?</div>
+                    <div class="quiz-options">
+                        <label class="quiz-option">
+                            <input type="radio" name="q3" value="a" onchange="document.getElementById('q3-check').disabled=false">
+                            <span>Length of the prompt</span>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q3" value="b" onchange="document.getElementById('q3-check').disabled=false">
+                            <span>Language - set the tone and style</span>
+                        </label>
+                        <label class="quiz-option">
+                            <input type="radio" name="q3" value="c" onchange="document.getElementById('q3-check').disabled=false">
+                            <span>Limitations of the model</span>
+                        </label>
+                    </div>
+                    <button class="quiz-button" id="q3-check" onclick="checkQuiz('q3', 'b')" disabled>Check Answer</button>
+                    <div class="quiz-feedback" id="q3-feedback"></div>
+                </div>
+
+                <div class="divider thick"></div>
+
+                <div class="lesson-summary">
+                    <div class="summary-title">Key Takeaways</div>
+                    <ul class="summary-points">
+                        <li><strong>Good prompts = better results.</strong> Clarity, context, and examples matter.</li>
+                        <li><strong>Use the CLEAR framework</strong> to structure your prompts consistently.</li>
+                        <li><strong>Iteration is your superpower.</strong> First output rarely perfect—refine and retry.</li>
+                        <li><strong>Context management</strong> lets you leverage larger context windows effectively.</li>
+                        <li><strong>Advanced techniques</strong> (chain-of-thought, role-playing, few-shot) unlock better outputs.</li>
+                        <li><strong>Practice and experiment.</strong> What works depends on your use case.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- LESSON 4 TAB CONTENT -->
+        <div id="lesson-4" class="lesson-tab-content">
+            <div class="lesson-body">
+                <div class="learning-zone">
+                    <div class="learning-zone-icon">🎯</div>
+                    <div>
+                        <h3>Practice What You've Learned</h3>
+                        <p>Apply your knowledge through hands-on activities. Strengthen your prompt engineering and context management skills.</p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section-header">
+                    <div class="section-icon">🎓</div>
+                    <span>Purpose</span>
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">Learning by doing is the most effective way to master prompt engineering. This lesson contains 4 hands-on activities that challenge you to apply the CLEAR framework, improve prompts, manage context, and use advanced techniques. Complete each activity and compare your answer with expert feedback.</p>
+
+                <div class="divider thick"></div>
+
+                <!-- ACTIVITY 1: CLEAR FRAMEWORK -->
+                <div class="activity-card">
+                    <div class="activity-title">
+                        <div class="activity-number">1</div>
+                        <span>Build a Prompt Using CLEAR</span>
+                    </div>
+                    <div class="activity-description">
+                        <strong>Task:</strong> You need to generate a product description for an online store. Write a prompt using the CLEAR framework (Context, Language, Examples, Audience, Result). Focus on selling a high-end wireless headphone to tech enthusiasts.
+                    </div>
+                    <div class="activity-input-group">
+                        <label class="activity-label">Your Prompt:</label>
+                        <textarea id="activity-1-input" class="activity-textarea" placeholder="Write your prompt here using the CLEAR framework..."></textarea>
+                    </div>
+                    <button class="activity-button" onclick="submitActivity(1)">Submit & See Feedback</button>
+                    
+                    <div id="activity-1-result" class="activity-result">
+                        <div class="result-title">✓ Expert Feedback</div>
+                        <div class="result-content">
+                            <p><strong>What a strong CLEAR prompt includes:</strong></p>
+                            <ul style="margin-left: 2rem; margin-top: 1rem; color: var(--slate-dark);">
+                                <li><strong>Context:</strong> "You are an e-commerce product writer" or mention the product type</li>
+                                <li><strong>Language:</strong> "Write in a tech-savvy, persuasive tone" - specify the style</li>
+                                <li><strong>Examples:</strong> Show 1-2 example descriptions you like</li>
+                                <li><strong>Audience:</strong> "for tech enthusiasts aged 25-45" - be specific</li>
+                                <li><strong>Result:</strong> "Create a 150-word product description that highlights sound quality, noise cancellation, and battery life"</li>
+                            </ul>
+                            <p style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(6, 182, 212, 0.3);"><strong>Your prompt likely mentioned most of these. The key is being <strong>specific</strong> and <strong>structured</strong>!</strong></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACTIVITY 2: PROMPT IMPROVEMENT -->
+                <div class="activity-card">
+                    <div class="activity-title">
+                        <div class="activity-number">2</div>
+                        <span>Improve a Weak Prompt</span>
+                    </div>
+                    <div class="activity-description">
+                        <strong>Task:</strong> This prompt is too vague: "Write about machine learning." <br/>Rewrite it to be clear, specific, and actionable. Include context, audience, constraints, and the desired result.
+                    </div>
+                    <div class="activity-input-group">
+                        <label class="activity-label">Your Improved Prompt:</label>
+                        <textarea id="activity-2-input" class="activity-textarea" placeholder="Rewrite the prompt to be much more specific and actionable..."></textarea>
+                    </div>
+                    <button class="activity-button" onclick="submitActivity(2)">Submit & See Feedback</button>
+                    
+                    <div id="activity-2-result" class="activity-result">
+                        <div class="result-title">✓ Expert Feedback</div>
+                        <div class="result-content">
+                            <p><strong>A much better prompt would be:</strong></p>
+                            <p style="background: #E0F2FE; padding: 1rem; border-radius: 8px; margin: 1rem 0; color: var(--slate-dark);">"Write a 300-word explanation of how supervised machine learning works, targeted at business executives with no technical background. Use a simple analogy (like teaching a child) and avoid jargon. Include one real-world example of supervised learning in business."</p>
+                            <p><strong>Key improvements:</strong></p>
+                            <ul style="margin-left: 2rem; margin-top: 1rem; color: var(--slate-dark);">
+                                <li>✓ Specific length (300 words)</li>
+                                <li>✓ Clear audience (business executives, non-technical)</li>
+                                <li>✓ Specific constraints (use analogy, avoid jargon)</li>
+                                <li>✓ Specific format (explanation + example)</li>
+                                <li>✓ Actionable and measurable</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACTIVITY 3: CONTEXT MANAGEMENT -->
+                <div class="activity-card">
+                    <div class="activity-title">
+                        <div class="activity-number">3</div>
+                        <span>Manage Context Effectively</span>
+                    </div>
+                    <div class="activity-description">
+                        <strong>Task:</strong> You want to ask Claude to analyze a 50-page document about company strategy. Your context window is 100K tokens. What's the BEST approach?
+                    </div>
+                    <div class="activity-options">
+                        <label class="activity-option-label">
+                            <input type="radio" name="activity-3" value="a">
+                            <span>Paste the entire 50 pages and ask Claude to analyze everything</span>
+                        </label>
+                        <label class="activity-option-label">
+                            <input type="radio" name="activity-3" value="b">
+                            <span>Summarize key sections (3-5 pages), paste those, and ask specific questions about strategy</span>
+                        </label>
+                        <label class="activity-option-label">
+                            <input type="radio" name="activity-3" value="c">
+                            <span>Ask Claude to generate a summary first, then analyze the summary</span>
+                        </label>
+                        <label class="activity-option-label">
+                            <input type="radio" name="activity-3" value="d">
+                            <span>Split the document into chunks and ask Claude to analyze each separately</span>
+                        </label>
+                    </div>
+                    <button class="activity-button" onclick="submitMultipleChoice(3)">Submit & See Feedback</button>
+                    
+                    <div id="activity-3-result" class="activity-result">
+                        <div class="result-title">✓ Expert Feedback</div>
+                        <div class="result-content">
+                            <p><strong>The best answer is B - Summarize key sections first.</strong></p>
+                            <p style="margin-top: 1rem; color: var(--slate-dark);"><strong>Why?</strong></p>
+                            <ul style="margin-left: 2rem; margin-top: 1rem; color: var(--slate-dark);">
+                                <li><strong>Option A</strong> - Works but wastes context space on background material</li>
+                                <li><strong>Option B</strong> - ✓ BEST: You summarize, paste focused content, get deep insights</li>
+                                <li><strong>Option C</strong> - Adds an unnecessary step; your summarization is better</li>
+                                <li><strong>Option D</strong> - Splits context and loses the big picture</li>
+                            </ul>
+                            <p style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(6, 182, 212, 0.3);"><strong>Lesson:</strong> Your context is precious. Prioritize information, remove noise, and be selective about what you paste.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ACTIVITY 4: ADVANCED TECHNIQUE CHOICE -->
+                <div class="activity-card">
+                    <div class="activity-title">
+                        <div class="activity-number">4</div>
+                        <span>Choose the Right Advanced Technique</span>
+                    </div>
+                    <div class="activity-description">
+                        <strong>Task:</strong> You need Claude to evaluate code quality for security vulnerabilities. Which advanced technique is MOST appropriate?
+                    </div>
+                    <div class="activity-options">
+                        <label class="activity-option-label">
+                            <input type="radio" name="activity-4" value="a">
+                            <span>Role-playing: "Act as a security expert and review this code"</span>
+                        </label>
+                        <label class="activity-option-label">
+                            <input type="radio" name="activity-4" value="b">
+                            <span>Chain-of-thought: "Walk through the code line-by-line and identify potential security issues"</span>
+                        </label>
+                        <label class="activity-option-label">
+                            <input type="radio" name="activity-4" value="c">
+                            <span>Few-shot: Show examples of vulnerable code + secure fixes, then ask Claude to review new code</span>
+                        </label>
+                        <label class="activity-option-label">
+                            <input type="radio" name="activity-4" value="d">
+                            <span>Combine B and C: Chain-of-thought PLUS few-shot examples</span>
+                        </label>
+                    </div>
+                    <button class="activity-button" onclick="submitMultipleChoice(4)">Submit & See Feedback</button>
+                    
+                    <div id="activity-4-result" class="activity-result">
+                        <div class="result-title">✓ Expert Feedback</div>
+                        <div class="result-content">
+                            <p><strong>The best answer is D - Combine chain-of-thought + few-shot examples.</strong></p>
+                            <p style="margin-top: 1rem; color: var(--slate-dark);"><strong>Why?</strong></p>
+                            <ul style="margin-left: 2rem; margin-top: 1rem; color: var(--slate-dark);">
+                                <li><strong>A (Role-playing)</strong> - Good, but not specific enough for security</li>
+                                <li><strong>B (Chain-of-thought)</strong> - ✓ Good: Forces step-by-step reasoning</li>
+                                <li><strong>C (Few-shot)</strong> - ✓ Good: Shows patterns of vulnerable vs. secure code</li>
+                                <li><strong>D (Both B + C)</strong> - ✓ BEST: Combines reasoning + examples for best results</li>
+                            </ul>
+                            <p style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(6, 182, 212, 0.3);"><strong>Expert Prompt:</strong> "Act as a security expert. Review this code line-by-line for vulnerabilities. Here are examples of vulnerable code (X) vs secure alternatives (Y). Now review this new code:"</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider thick"></div>
+
+                <div class="lesson-summary">
+                    <div class="summary-title">Congratulations! 🎉</div>
+                    <ul class="summary-points">
+                        <li><strong>You've completed the GenAI Academy course!</strong> You now understand AI fundamentals, can craft effective prompts, and can apply advanced techniques.</li>
+                        <li><strong>Keep practicing.</strong> The best way to improve is to experiment with different prompts and techniques on real tasks.</li>
+                        <li><strong>Iterate constantly.</strong> Don't expect perfect results on the first try—refine and improve your prompts based on output.</li>
+                        <li><strong>Share what you learn.</strong> Help others master prompt engineering and be an AI power user in your organization.</li>
+                        <li><strong>Stay curious.</strong> AI is evolving rapidly—keep learning about new models, techniques, and best practices.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>GenAI Academy © 2024 | Built with interactive learning in mind</p>
+    </div>
+
+    <script>
+        // Toggle intro sections
+        function toggleIntro(element) {
+            const content = element.nextElementSibling;
+            const toggle = element.querySelector('.toggle');
+            content.classList.toggle('open');
+            toggle.classList.toggle('open');
+            toggle.textContent = content.classList.contains('open') ? '−' : '+';
+        }
+
+        // Switch between tabs
+        function switchTab(event, tabId) {
+            const buttons = document.querySelectorAll('.lesson-tab-btn');
+            const contents = document.querySelectorAll('.lesson-tab-content');
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+
+            event.target.closest('.lesson-tab-btn').classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+            
+            updateProgress();
+        }
+
+        // Flip flashcard
+        function flipFlashcard(element) {
+            const flashcard = element.closest('.flashcard-container').querySelector('.flashcard');
+            flashcard.classList.toggle('flipped');
+        }
+
+        // Navigate flashcards
+        function nextFlashcard(button) {
+            const wrapper = button.closest('.flashcard-wrapper');
+            const current = parseInt(wrapper.dataset.current) || 0;
+            const total = parseInt(wrapper.dataset.total) || 1;
+            const next = (current + 1) % total;
+            
+            wrapper.dataset.current = next;
+            showFlashcard(wrapper, next);
+            updateFlashcardNav(wrapper);
+        }
+
+        function prevFlashcard(button) {
+            const wrapper = button.closest('.flashcard-wrapper');
+            const current = parseInt(wrapper.dataset.current) || 0;
+            const total = parseInt(wrapper.dataset.total) || 1;
+            const prev = (current - 1 + total) % total;
+            
+            wrapper.dataset.current = prev;
+            showFlashcard(wrapper, prev);
+            updateFlashcardNav(wrapper);
+        }
+
+        function showFlashcard(wrapper, index) {
+            const cards = wrapper.querySelectorAll('.flashcard-container');
+            cards.forEach((card, i) => {
+                card.style.display = i === index ? 'block' : 'none';
+                if (i === index) {
+                    card.querySelector('.flashcard').classList.remove('flipped');
+                }
+            });
+        }
+
+        function updateFlashcardNav(wrapper) {
+            const current = parseInt(wrapper.dataset.current) || 0;
+            const total = parseInt(wrapper.dataset.total) || 1;
+            const counter = wrapper.querySelector('.flashcard-counter');
+            const prevBtn = wrapper.querySelector('.flashcard-prev');
+            const nextBtn = wrapper.querySelector('.flashcard-next');
+            
+            if (counter) counter.textContent = `${current + 1} / ${total}`;
+            if (prevBtn) prevBtn.disabled = current === 0;
+            if (nextBtn) nextBtn.disabled = current === total - 1;
+        }
+
+        // Quiz
+        function checkQuiz(name, correct) {
+            const selected = document.querySelector(`input[name="${name}"]:checked`);
+            const feedback = document.getElementById(`${name}-feedback`);
+            
+            if (!selected) return;
+            
+            feedback.classList.add('show');
+            if (selected.value === correct) {
+                feedback.classList.add('correct');
+                feedback.classList.remove('incorrect');
+                feedback.textContent = '✅ Correct! LLMs work by predicting the next word based on patterns. This is why they\'re great at generating text but can hallucinate when they don\'t know something.';
+            } else {
+                feedback.classList.add('incorrect');
+                feedback.classList.remove('correct');
+                feedback.textContent = '❌ Not quite. LLMs predict the next word based on statistical patterns. Try again!';
+            }
+        }
+
+        // Update progress
+        function updateProgress() {
+            const activeTabs = document.querySelectorAll('.lesson-tab-content.active').length;
+            document.getElementById('progress').textContent = `${activeTabs}/4`;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            const wrapper = document.querySelector('.flashcard-wrapper');
+            if (wrapper) {
+                const total = wrapper.querySelectorAll('.flashcard-container').length;
+                wrapper.dataset.total = total;
+                wrapper.dataset.current = 0;
+                updateFlashcardNav(wrapper);
+                showFlashcard(wrapper, 0);
+            }
+            updateProgress();
+        });
+
+        // Toggle accordion
+        function toggleAccordion(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.accordion-toggle');
+            
+            header.classList.toggle('open');
+            body.classList.toggle('open');
+            
+            if (toggle) {
+                toggle.classList.toggle('open');
+            }
+        }
+
+        // Activity functions
+        function submitActivity(activityNum) {
+            const input = document.getElementById(`activity-${activityNum}-input`);
+            const result = document.getElementById(`activity-${activityNum}-result`);
+            
+            if (!input.value.trim()) {
+                alert('Please provide an answer before submitting.');
+                return;
+            }
+
+            result.classList.add('show');
+        }
+
+        function submitMultipleChoice(activityNum) {
+            const selected = document.querySelector(`input[name="activity-${activityNum}"]:checked`);
+            const result = document.getElementById(`activity-${activityNum}-result`);
+            
+            if (!selected) {
+                alert('Please select an option before submitting.');
+                return;
+            }
+
+            result.classList.add('show');
+        }
+
+        function resetActivity(activityNum) {
+            const input = document.getElementById(`activity-${activityNum}-input`);
+            const result = document.getElementById(`activity-${activityNum}-result`);
+            
+            if (input) input.value = '';
+            result.classList.remove('show');
+        }
+    </script>
+</body>
+</html>

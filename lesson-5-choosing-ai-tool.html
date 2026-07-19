@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choosing the Right AI Tool - GenAI Academy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --slate-dark: #1A202C;
+            --slate-light: #2D3748;
+            --teal: #06B6D4;
+            --teal-light: #22D3EE;
+            --cream: #F8F9FA;
+            --gray-border: #E2E8F0;
+            --text-secondary: #64748B;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'IBM Plex Sans', 'Segoe UI', sans-serif;
+            background: var(--cream);
+            color: var(--slate-dark);
+            line-height: 1.6;
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            background: linear-gradient(135deg, var(--slate-dark) 0%, var(--slate-light) 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-back {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .header-back:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--slate-dark), var(--teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--gray-border);
+            margin: 3rem 0;
+        }
+
+        .divider.thick {
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, var(--teal) 50%, transparent 100%);
+            margin: 3.5rem 0;
+        }
+
+        .learning-zone {
+            background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .learning-zone-icon {
+            font-size: 2.5rem;
+            flex-shrink: 0;
+        }
+
+        .learning-zone h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 2rem 0 1.5rem 0;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--slate-dark);
+        }
+
+        .section-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--teal);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .accordion-block {
+            background: white;
+            border: 1px solid var(--gray-border);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .accordion-header {
+            background: linear-gradient(135deg, #F8F9FA 0%, #F0F4F8 100%);
+            padding: 1.5rem;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: var(--slate-dark);
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .accordion-header:hover {
+            background: linear-gradient(135deg, #F0F4F8 0%, #E0E9F0 100%);
+            border-bottom-color: var(--teal);
+        }
+
+        .accordion-header.open {
+            background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
+            color: white;
+            border-bottom-color: var(--teal-light);
+        }
+
+        .accordion-toggle {
+            transition: transform 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .accordion-toggle.open {
+            transform: rotate(180deg);
+        }
+
+        .accordion-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 1.5rem;
+        }
+
+        .accordion-body.open {
+            max-height: 2000px;
+            padding: 1.5rem;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 700;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.3s ease;
+        }
+
+        .comparison-table th:hover {
+            background: linear-gradient(135deg, var(--teal-light) 0%, var(--teal) 100%);
+        }
+
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-border);
+            color: var(--text-secondary);
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tr:hover {
+            background: #F0F9FF;
+        }
+
+        .table-highlight {
+            background: #E0F2FE !important;
+            border-left: 4px solid var(--teal);
+        }
+
+        .metric-badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            background: var(--teal);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+
+        .metric-badge.good { background: var(--success); }
+        .metric-badge.warning { background: var(--warning); }
+        .metric-badge.neutral { background: #64748B; }
+
+        .why-matters {
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+            border-left: 4px solid var(--warning);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .why-matters strong {
+            color: #92400e;
+        }
+
+        .decision-activity {
+            background: white;
+            border: 2px solid var(--teal);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .activity-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .scenario-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .scenario-btn {
+            padding: 1.5rem;
+            border: 2px solid var(--gray-border);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .scenario-btn:hover {
+            border-color: var(--teal);
+            background: #F0F9FF;
+            transform: translateY(-2px);
+        }
+
+        .scenario-btn.selected {
+            border-color: var(--teal);
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
+        }
+
+        .recommendation-box {
+            background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+            border-left: 4px solid var(--success);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            display: none;
+        }
+
+        .recommendation-box.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+            border-left: 4px solid var(--teal);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .feature-card strong {
+            color: var(--teal);
+        }
+
+        .quiz-container {
+            background: #F8F9FA;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid var(--teal);
+        }
+
+        .quiz-question {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--slate-dark);
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid var(--gray-border);
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--teal);
+        }
+
+        .quiz-option input[type="radio"] {
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            accent-color: var(--teal);
+        }
+
+        .quiz-button {
+            background: var(--teal);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .quiz-button:hover:not(:disabled) {
+            background: var(--teal-light);
+        }
+
+        .quiz-button:disabled {
+            background: #CBD5E1;
+            cursor: not-allowed;
+        }
+
+        .quiz-feedback {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+        }
+
+        .quiz-feedback.correct {
+            background: #ECFDF5;
+            color: #065F46;
+            border-left: 4px solid var(--success);
+        }
+
+        .quiz-feedback.incorrect {
+            background: #FEF2F2;
+            color: #7F1D1D;
+            border-left: 4px solid var(--error);
+        }
+
+        .lesson-summary {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+            border-left: 4px solid var(--teal);
+            padding: 2rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+
+        .summary-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--slate-dark);
+            margin-bottom: 1rem;
+        }
+
+        .summary-points {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .summary-points li {
+            padding-left: 2rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .summary-points li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--teal);
+            font-weight: 700;
+        }
+
+        .footer {
+            background: var(--slate-dark);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-top: 5rem;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+
+            .comparison-table {
+                font-size: 0.9rem;
+            }
+
+            .comparison-table th, .comparison-table td {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">
+            <span>🤖</span>
+            <span>GenAI Academy</span>
+        </div>
+        <a href="index.html" class="header-back">← Back to Course</a>
+    </div>
+
+    <div class="container">
+        <div class="hero">
+            <h1>Choosing the Right AI Tool</h1>
+            <p>Compare ChatGPT, Claude, Gemini, and more. Find the perfect tool for your needs.</p>
+        </div>
+
+        <div class="divider thick"></div>
+
+        <div class="learning-zone">
+            <div class="learning-zone-icon">🛠️</div>
+            <div>
+                <h3>Make Informed Decisions</h3>
+                <p>Different AI tools have different strengths. Learn how to pick the right one for your specific task.</p>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section-header">
+            <div class="section-icon">🎓</div>
+            <span>Purpose</span>
+        </div>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">With dozens of AI tools available, choosing the right one matters. This lesson compares the most popular models by their capabilities, pricing, context windows, and best use cases. You'll learn how to evaluate tools and match them to your needs.</p>
+
+        <div class="divider"></div>
+
+        <div class="section-header">
+            <div class="section-icon">✓</div>
+            <span>Lesson Objectives</span>
+        </div>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; color: var(--text-secondary);">
+            <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Understand the major AI models and their unique strengths</span></li>
+            <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Compare pricing, speed, and context window capabilities</span></li>
+            <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Match AI tools to specific use cases</span></li>
+            <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Evaluate data privacy and security considerations</span></li>
+        </ul>
+
+        <div class="divider thick"></div>
+
+        <div style="text-align: center; margin-bottom: 2rem; color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Major AI Models Comparison</div>
+
+        <div style="overflow-x: auto; margin: 2rem 0;">
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th style="min-width: 140px;">Feature</th>
+                        <th style="min-width: 160px;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span>🤖 Claude</span>
+                                <span style="font-size: 0.75rem; opacity: 0.8;">(Anthropic)</span>
+                            </div>
+                        </th>
+                        <th style="min-width: 160px;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span>💬 ChatGPT</span>
+                                <span style="font-size: 0.75rem; opacity: 0.8;">(OpenAI)</span>
+                            </div>
+                        </th>
+                        <th style="min-width: 160px;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span>🔍 Gemini</span>
+                                <span style="font-size: 0.75rem; opacity: 0.8;">(Google)</span>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Best Model</strong></td>
+                        <td><span class="metric-badge good">Opus 3</span></td>
+                        <td><span class="metric-badge good">GPT-4</span></td>
+                        <td><span class="metric-badge good">Gemini Ultra</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Context Window</strong></td>
+                        <td><span class="metric-badge good">200K tokens</span><br><small>~150K words</small></td>
+                        <td><span class="metric-badge warning">128K tokens</span><br><small>~96K words</small></td>
+                        <td><span class="metric-badge neutral">32K tokens</span><br><small>~24K words</small></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Speed</strong></td>
+                        <td><span class="metric-badge warning">⚡⚡ Medium</span></td>
+                        <td><span class="metric-badge good">⚡⚡⚡ Fast</span></td>
+                        <td><span class="metric-badge good">⚡⚡ Fast</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reasoning</strong></td>
+                        <td><span class="metric-badge good">★★★★★ Excellent</span></td>
+                        <td><span class="metric-badge good">★★★★ Very Good</span></td>
+                        <td><span class="metric-badge warning">★★★ Good</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Web Browsing</strong></td>
+                        <td><span class="metric-badge neutral">No (Pro)</span></td>
+                        <td><span class="metric-badge good">Yes (Pro)</span></td>
+                        <td><span class="metric-badge good">Yes</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Vision/Images</strong></td>
+                        <td><span class="metric-badge good">Yes</span></td>
+                        <td><span class="metric-badge good">Yes</span></td>
+                        <td><span class="metric-badge good">Yes</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Free Tier</strong></td>
+                        <td><span class="metric-badge good">Yes</span></td>
+                        <td><span class="metric-badge good">Yes</span></td>
+                        <td><span class="metric-badge good">Yes</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Paid Plan</strong></td>
+                        <td><span class="metric-badge neutral">$20/month</span></td>
+                        <td><span class="metric-badge neutral">$20/month</span></td>
+                        <td><span class="metric-badge neutral">$20/month*</span><br><small>*With Google One</small></td>
+                    </tr>
+                    <tr>
+                        <td><strong>API Cost</strong></td>
+                        <td><span class="metric-badge good">Mid-range</span></td>
+                        <td><span class="metric-badge warning">Higher</span></td>
+                        <td><span class="metric-badge good">Competitive</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Best For</strong></td>
+                        <td><span class="metric-badge good">Complex reasoning, long docs</span></td>
+                        <td><span class="metric-badge good">Speed, general tasks</span></td>
+                        <td><span class="metric-badge good">Google ecosystem</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="divider thick"></div>
+
+        <div style="text-align: center; margin-bottom: 2rem; color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Key Comparison Metrics Explained</div>
+
+        <div style="overflow-x: auto; margin: 2rem 0;">
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th style="min-width: 160px;"><strong>Metric</strong></th>
+                        <th style="min-width: 200px;"><strong>What It Means</strong></th>
+                        <th style="min-width: 200px;"><strong>Why It Matters</strong></th>
+                        <th style="min-width: 160px;"><strong>Best Choice</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Context Window</strong></td>
+                        <td>Max text the model can process at once (in tokens)</td>
+                        <td>Larger = can analyze full documents without splitting. 200K tokens = ~150 pages</td>
+                        <td><span class="metric-badge good">Claude (200K)</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Speed</strong></td>
+                        <td>How fast it responds to your prompt</td>
+                        <td>Fast = good for real-time use, customer service. Slow = good for deep analysis</td>
+                        <td><span class="metric-badge good">ChatGPT</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reasoning</strong></td>
+                        <td>Ability to solve complex, multi-step problems</td>
+                        <td>Critical for code review, logical analysis, architecture decisions</td>
+                        <td><span class="metric-badge good">Claude</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Web Browsing</strong></td>
+                        <td>Can search current internet for recent info</td>
+                        <td>Essential for news, current prices, today's events. Free tiers can't do this</td>
+                        <td><span class="metric-badge good">ChatGPT Pro</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Vision/Images</strong></td>
+                        <td>Can analyze photos, screenshots, documents</td>
+                        <td>Useful for UI review, screenshot analysis, document processing</td>
+                        <td><span class="metric-badge good">All Equal</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>API Cost</strong></td>
+                        <td>Price per 1K tokens (input/output)</td>
+                        <td>Impacts total cost for automation. Small tasks: negligible. Bulk: matters</td>
+                        <td><span class="metric-badge good">Claude API</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Knowledge Cutoff</strong></td>
+                        <td>When the model's training data ends</td>
+                        <td>Anything after this date is unknown to model (risk of hallucination)</td>
+                        <td><span class="metric-badge good">Web Browsing (Current)</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Multimodal</strong></td>
+                        <td>Handles text, images, video, audio</td>
+                        <td>More versatility = fewer tool switches needed</td>
+                        <td><span class="metric-badge good">All Have Text+Image</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="why-matters">
+            <p><strong>💡 Why These Metrics Matter:</strong></p>
+            <ul style="list-style: disc; margin-left: 2rem; margin-top: 1rem; color: #92400e;">
+                <li><strong>Context Window:</strong> Wrong choice = splitting documents, losing context, bad analysis</li>
+                <li><strong>Speed:</strong> Critical for customer-facing apps. Slow = frustrated users</li>
+                <li><strong>Reasoning:</strong> Directly impacts quality for complex tasks like code review, strategy</li>
+                <li><strong>Web Browsing:</strong> Without it, you're stuck with knowledge from training date</li>
+                <li><strong>Cost:</strong> At scale, choosing wrong model = wasted money ($100s-1000s/month)</li>
+            </ul>
+        </div>
+
+        <div class="divider thick"></div>
+
+        <div class="quiz-container">
+            <div class="quiz-question">✏️ Check Your Understanding</div>
+            <div style="font-size: 1rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--slate-dark);">You need to analyze 150 pages of code for security issues. Speed isn't critical but you need the full codebase in one prompt. Which tool is best?</div>
+            <div class="quiz-options">
+                <label class="quiz-option">
+                    <input type="radio" name="q1" value="a" onchange="document.getElementById('q1-check').disabled=false">
+                    <span>ChatGPT-4 (128K context is enough)</span>
+                </label>
+                <label class="quiz-option">
+                    <input type="radio" name="q1" value="b" onchange="document.getElementById('q1-check').disabled=false">
+                    <span>Claude Opus (200K context handles full codebase)</span>
+                </label>
+                <label class="quiz-option">
+                    <input type="radio" name="q1" value="c" onchange="document.getElementById('q1-check').disabled=false">
+                    <span>Gemini Pro (cheaper option)</span>
+                </label>
+            </div>
+            <button class="quiz-button" id="q1-check" onclick="checkQuiz('q1', 'b')" disabled>Check Answer</button>
+            <div class="quiz-feedback" id="q1-feedback"></div>
+        </div>
+
+        <div class="divider thick"></div>
+
+        <div style="text-align: center; margin-bottom: 2rem; color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Why This Matters</div>
+
+        <div class="why-matters">
+            <p><strong>💡 Why Tool Choice Matters:</strong></p>
+            <ul style="list-style: disc; margin-left: 2rem; margin-top: 1rem; color: #92400e;">
+                <li><strong>Wrong tool = wasted time & money:</strong> Using a small context window forces you to split data, losing important context</li>
+                <li><strong>Productivity multiplier:</strong> Right tool saves hours. Claude's 200K context can process what ChatGPT can't without splitting</li>
+                <li><strong>Cost impacts:</strong> Using an overpowered model on simple tasks wastes money; using weak model on complex tasks wastes time</li>
+                <li><strong>Quality of output:</strong> Tool strengths directly impact output quality. Claude excels at reasoning; ChatGPT excels at speed</li>
+            </ul>
+        </div>
+
+        <div class="divider thick"></div>
+
+        <!-- INTERACTIVE DECISION ACTIVITY -->
+        <div class="decision-activity">
+            <div style="font-size: 1.25rem; font-weight: 700; color: var(--slate-dark); margin-bottom: 1.5rem;">🎯 Your Scenario - Pick a Use Case</div>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">Select a scenario below. We'll recommend the best tool based on your specific needs.</p>
+            
+            <div class="scenario-buttons">
+                <div class="scenario-btn" onclick="selectScenario(1, 'content-marketing')">
+                    <div style="font-size: 1.1rem; color: var(--teal); margin-bottom: 0.5rem;">📝 Content Marketing</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Write blog posts, social media</div>
+                </div>
+                <div class="scenario-btn" onclick="selectScenario(2, 'code-review')">
+                    <div style="font-size: 1.1rem; color: var(--teal); margin-bottom: 0.5rem;">💻 Code Review</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Analyze security, performance</div>
+                </div>
+                <div class="scenario-btn" onclick="selectScenario(3, 'data-analysis')">
+                    <div style="font-size: 1.1rem; color: var(--teal); margin-bottom: 0.5rem;">📊 Data Analysis</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Analyze 100+ pages of data</div>
+                </div>
+                <div class="scenario-btn" onclick="selectScenario(4, 'real-time')">
+                    <div style="font-size: 1.1rem; color: var(--teal); margin-bottom: 0.5rem;">🔄 Real-Time Info</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Latest news, current events</div>
+                </div>
+            </div>
+
+            <div id="recommendation" class="recommendation-box">
+                <div id="rec-content"></div>
+            </div>
+        </div>
+
+        <div class="lesson-summary">
+            <div class="summary-title">Key Takeaways</div>
+            <ul class="summary-points">
+                <li><strong>Claude excels at reasoning</strong> and has the largest context window (200K tokens).</li>
+                <li><strong>ChatGPT is the fastest</strong> and most polished, with free tier available.</li>
+                <li><strong>Gemini integrates with Google</strong> services and handles multimodal tasks.</li>
+                <li><strong>Context window matters:</strong> Choose based on document size and complexity.</li>
+                <li><strong>Pricing varies:</strong> Free tiers exist, subscriptions are $20/month, API is pay-per-token.</li>
+                <li><strong>Never use free tiers for confidential data.</strong> Use APIs or enterprise plans.</li>
+                <li><strong>Test multiple tools</strong> to find the best fit for your specific use case.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Choosing the Right AI Tool | GenAI Academy © 2024</p>
+    </div>
+
+    <script>
+        function toggleAccordion(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.accordion-toggle');
+            
+            header.classList.toggle('open');
+            body.classList.toggle('open');
+            
+            if (toggle) {
+                toggle.classList.toggle('open');
+            }
+        }
+
+        function checkQuiz(name, correct) {
+            const selected = document.querySelector(`input[name="${name}"]:checked`);
+            const feedback = document.getElementById(`${name}-feedback`);
+            
+            if (!selected) return;
+            
+            feedback.classList.add('show');
+            if (selected.value === correct) {
+                feedback.classList.add('correct');
+                feedback.classList.remove('incorrect');
+                feedback.textContent = '✅ Correct! Claude Opus with 200K tokens is the ideal choice for large codebases. While ChatGPT-4 could work, you\'d need to split the code, losing context.';
+            } else {
+                feedback.classList.add('incorrect');
+                feedback.classList.remove('correct');
+                feedback.textContent = '❌ Not quite. For 150 pages (≈150K tokens), you need Claude Opus\'s 200K context window. ChatGPT-4 would require splitting the code, losing important context for security analysis.';
+            }
+        }
+
+        function selectScenario(num, scenarioId) {
+            // Update UI
+            document.querySelectorAll('.scenario-btn').forEach(btn => btn.classList.remove('selected'));
+            event.target.closest('.scenario-btn').classList.add('selected');
+
+            // Show recommendations
+            const recommendations = {
+                'content-marketing': {
+                    tool: '🎯 Best Choice: ChatGPT-4 or Claude Sonnet',
+                    why: '<strong>Why:</strong> Both are fast and cost-effective. ChatGPT-4 for speed and web browsing; Claude for longer articles with nuance.',
+                    factors: '<strong>Key Factors:</strong> Speed (ChatGPT wins), reasoning (Claude wins), web info (ChatGPT only), cost ($20/month for either)',
+                    recommendation: 'Start with ChatGPT-4 for drafts, iterate with Claude for refinement'
+                },
+                'code-review': {
+                    tool: '🎯 Best Choice: Claude Opus or ChatGPT-4',
+                    why: '<strong>Why:</strong> Both excel at code analysis. Claude for larger codebases (200K tokens); ChatGPT for quick reviews.',
+                    factors: '<strong>Key Factors:</strong> Context window (Claude: 200K wins), reasoning (Claude better), cost (Claude API is cheaper per token)',
+                    recommendation: 'Use Claude Opus for full codebase review; ChatGPT-4 for specific file checks'
+                },
+                'data-analysis': {
+                    tool: '🎯 Best Choice: Claude Opus',
+                    why: '<strong>Why:</strong> 200K context window lets you paste entire reports without splitting. Excellent reasoning for complex analysis.',
+                    factors: '<strong>Key Factors:</strong> Context (Claude: 200K is huge advantage), reasoning (Claude excels), cost (API: ~$3-5 per analysis)',
+                    recommendation: 'Claude Opus is ideal. Paste full data → analyze → iterate. Time saved: hours → minutes'
+                },
+                'real-time': {
+                    tool: '🎯 Best Choice: ChatGPT with Web Browsing',
+                    why: '<strong>Why:</strong> Only ChatGPT-4 with web browsing plugin can access current news/events. Claude/Gemini have knowledge cutoffs.',
+                    factors: '<strong>Key Factors:</strong> Web access (ChatGPT only), real-time data (needed), accuracy (verify independently)',
+                    recommendation: 'ChatGPT-4 Pro ($20/month). Don\'t trust output 100% - verify critical facts'
+                }
+            };
+
+            const rec = recommendations[scenarioId];
+            const recDiv = document.getElementById('recommendation');
+            recDiv.innerHTML = `
+                <div style="font-size: 1.125rem; font-weight: 700; color: var(--teal); margin-bottom: 1rem;">${rec.tool}</div>
+                <div style="color: var(--slate-dark); margin-bottom: 1rem;">${rec.why}</div>
+                <div style="color: var(--slate-dark); margin-bottom: 1rem;">${rec.factors}</div>
+                <div style="background: #E0F2FE; padding: 1rem; border-left: 4px solid var(--teal); border-radius: 8px; color: var(--slate-dark);"><strong>✓ Recommendation:</strong> ${rec.recommendation}</div>
+            `;
+            recDiv.classList.add('show');
+        }
+    </script>
+</body>
+</html>

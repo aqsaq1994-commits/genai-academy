@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 6: Common Mistakes - GenAI Academy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --slate-dark: #1A202C;
+            --slate-light: #2D3748;
+            --teal: #06B6D4;
+            --teal-light: #22D3EE;
+            --cream: #F8F9FA;
+            --gray-border: #E2E8F0;
+            --text-secondary: #64748B;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'IBM Plex Sans', 'Segoe UI', sans-serif;
+            background: var(--cream);
+            color: var(--slate-dark);
+            line-height: 1.6;
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            background: linear-gradient(135deg, var(--slate-dark) 0%, var(--slate-light) 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-back {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .header-back:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--slate-dark), var(--teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--gray-border);
+            margin: 3rem 0;
+        }
+
+        .divider.thick {
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, var(--teal) 50%, transparent 100%);
+            margin: 3.5rem 0;
+        }
+
+        .learning-zone {
+            background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .learning-zone-icon {
+            font-size: 2.5rem;
+            flex-shrink: 0;
+        }
+
+        .learning-zone h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 2rem 0 1.5rem 0;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--slate-dark);
+        }
+
+        .section-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--teal);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .mistake-card {
+            background: white;
+            border-left: 4px solid var(--error);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .mistake-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--error);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mistake-problem {
+            background: #FEF2F2;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            color: var(--slate-dark);
+        }
+
+        .mistake-solution {
+            background: #ECFDF5;
+            padding: 1rem;
+            border-radius: 6px;
+            color: #065F46;
+            border-left: 4px solid var(--success);
+        }
+
+        .scenario-quiz {
+            background: white;
+            border: 2px solid var(--teal);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+
+        .scenario-quiz-question {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--slate-dark);
+            margin-bottom: 1rem;
+        }
+
+        .scenario-text {
+            background: #F8F9FA;
+            padding: 1rem;
+            border-left: 4px solid var(--warning);
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            color: var(--slate-dark);
+        }
+
+        .scenario-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .scenario-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            background: white;
+            border: 2px solid var(--gray-border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .scenario-option:hover {
+            border-color: var(--teal);
+            background: #F0F9FF;
+        }
+
+        .scenario-option input[type="radio"] {
+            margin-top: 0.25rem;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            accent-color: var(--teal);
+            flex-shrink: 0;
+        }
+
+        .scenario-result {
+            background: white;
+            border: 2px solid var(--gray-border);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .scenario-result.show {
+            display: block;
+        }
+
+        .scenario-result.correct {
+            border-color: var(--success);
+            background: #ECFDF5;
+        }
+
+        .scenario-result.incorrect {
+            border-color: #EF4444;
+            background: #FEF2F2;
+        }
+
+        .scenario-result-title {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .scenario-result.correct .scenario-result-title {
+            color: #065F46;
+        }
+
+        .scenario-result.incorrect .scenario-result-title {
+            color: #7F1D1D;
+        }
+
+        .scenario-result-content {
+            color: var(--slate-dark);
+            line-height: 1.7;
+        }
+
+        .accordion-block {
+            background: white;
+            border: 1px solid var(--gray-border);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .accordion-header {
+            background: linear-gradient(135deg, #F8F9FA 0%, #F0F4F8 100%);
+            padding: 1.5rem;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: var(--slate-dark);
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .accordion-header:hover {
+            background: linear-gradient(135deg, #F0F4F8 0%, #E0E9F0 100%);
+            border-bottom-color: var(--teal);
+        }
+
+        .accordion-header.open {
+            background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
+            color: white;
+            border-bottom-color: var(--teal-light);
+        }
+
+        .accordion-toggle {
+            transition: transform 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .accordion-toggle.open {
+            transform: rotate(180deg);
+        }
+
+        .accordion-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 1.5rem;
+        }
+
+        .accordion-body.open {
+            max-height: 2000px;
+            padding: 1.5rem;
+        }
+
+        .scenario-card {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+            border-left: 4px solid var(--teal);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .quiz-container {
+            background: #F8F9FA;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid var(--teal);
+        }
+
+        .quiz-question {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--slate-dark);
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid var(--gray-border);
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--teal);
+        }
+
+        .quiz-option input[type="radio"] {
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            accent-color: var(--teal);
+        }
+
+        .quiz-button {
+            background: var(--teal);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .quiz-button:hover:not(:disabled) {
+            background: var(--teal-light);
+        }
+
+        .quiz-button:disabled {
+            background: #CBD5E1;
+            cursor: not-allowed;
+        }
+
+        .quiz-feedback {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+        }
+
+        .quiz-feedback.correct {
+            background: #ECFDF5;
+            color: #065F46;
+            border-left: 4px solid var(--success);
+        }
+
+        .quiz-feedback.incorrect {
+            background: #FEF2F2;
+            color: #7F1D1D;
+            border-left: 4px solid var(--error);
+        }
+
+        .lesson-summary {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+            border-left: 4px solid var(--teal);
+            padding: 2rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+
+        .summary-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--slate-dark);
+            margin-bottom: 1rem;
+        }
+
+        .summary-points {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .summary-points li {
+            padding-left: 2rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .summary-points li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--teal);
+            font-weight: 700;
+        }
+
+        .footer {
+            background: var(--slate-dark);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-top: 5rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">
+            <span>🤖</span>
+            <span>GenAI Academy</span>
+        </div>
+        <a href="index.html" class="header-back">← Back to Course</a>
+    </div>
+
+    <div class="container">
+        <div class="hero">
+            <h1>Common Mistakes & How to Avoid Them</h1>
+            <p>Learn from real-world errors. Prevent costly AI failures in your work.</p>
+        </div>
+
+        <div class="divider thick"></div>
+
+        <div class="learning-zone">
+            <div class="learning-zone-icon">⚠️</div>
+            <div>
+                <h3>Learn From Mistakes</h3>
+                <p>Even experienced AI users make mistakes. Understanding common pitfalls helps you avoid them and use AI more effectively.</p>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section-header">
+            <div class="section-icon">🎓</div>
+            <span>Purpose</span>
+        </div>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">This lesson covers the most common mistakes people make with AI and how to avoid them. From trusting hallucinations to sharing confidential data, we'll explore real-world scenarios and practical solutions.</p>
+
+        <div class="divider"></div>
+
+        <div class="section-header">
+            <div class="section-icon">✓</div>
+            <span>Lesson Objectives</span>
+        </div>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; color: var(--text-secondary);">
+            <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Identify the 6 most common AI mistakes</span></li>
+            <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Understand why these mistakes happen</span></li>
+            <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Learn practical strategies to prevent them</span></li>
+            <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Develop a checklist for safe AI usage</span></li>
+        </ul>
+
+        <div class="divider thick"></div>
+
+        <div style="text-align: center; margin-bottom: 2rem; color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Click Each Mistake to Reveal the Solution</div>
+
+        <!-- MISTAKE 1 - CLICK TO REVEAL -->
+        <div class="mistake-card" onclick="toggleMistake(this)">
+            <div class="mistake-title">❌ Trusting Hallucinations Without Verification</div>
+            <div class="mistake-problem" style="display: block;">
+                <p><strong>The Problem:</strong> AI can confidently state false facts. You ask "What is X?" and AI gives a plausible-sounding answer that's completely wrong.</p>
+            </div>
+            <div class="mistake-solution" style="display: none;">
+                <p><strong>✓ The Solution:</strong></p>
+                <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                    <li>Always verify critical facts independently</li>
+                    <li>Use AI for drafting, brainstorming, analysis—not as a truth source</li>
+                    <li>Ask AI: "Are you certain about this?" or "What's your confidence level?"</li>
+                    <li>Cross-reference with authoritative sources</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- MISTAKE 2 - CLICK TO REVEAL -->
+        <div class="mistake-card" onclick="toggleMistake(this)">
+            <div class="mistake-title">❌ Sharing Confidential Data</div>
+            <div class="mistake-problem" style="display: block;">
+                <p><strong>The Problem:</strong> Pasting proprietary code, customer data, or business secrets into ChatGPT's free tier. OpenAI may use this for training models or might leak it.</p>
+            </div>
+            <div class="mistake-solution" style="display: none;">
+                <p><strong>✓ The Solution:</strong></p>
+                <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                    <li>Use paid API or business plans for sensitive data</li>
+                    <li>Anonymize data before pasting (remove names, dates, IDs)</li>
+                    <li>Use self-hosted models for maximum control</li>
+                    <li>Treat free tiers as public—never paste confidential content</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- MISTAKE 3 - CLICK TO REVEAL -->
+        <div class="mistake-card" onclick="toggleMistake(this)">
+            <div class="mistake-title">❌ Using AI for Real-Time Information</div>
+            <div class="mistake-problem" style="display: block;">
+                <p><strong>The Problem:</strong> Asking "What's happening in the news today?" or "What's the current price of Bitcoin?" AI has a knowledge cutoff—it doesn't know about today.</p>
+            </div>
+            <div class="mistake-solution" style="display: none;">
+                <p><strong>✓ The Solution:</strong></p>
+                <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                    <li>Use ChatGPT with web browsing for current events</li>
+                    <li>Use Perplexity AI for real-time search</li>
+                    <li>Always check the knowledge cutoff date</li>
+                    <li>For current data, search the web first, then ask AI to analyze</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- MISTAKE 4 - CLICK TO REVEAL -->
+        <div class="mistake-card" onclick="toggleMistake(this)">
+            <div class="mistake-title">❌ Poor Prompt Structure</div>
+            <div class="mistake-problem" style="display: block;">
+                <p><strong>The Problem:</strong> Vague prompts get vague outputs. Asking "Write something about AI" gives generic, unhelpful responses.</p>
+            </div>
+            <div class="mistake-solution" style="display: none;">
+                <p><strong>✓ The Solution:</strong></p>
+                <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                    <li>Always use the CLEAR framework (Lesson 3)</li>
+                    <li>Specify: audience, length, format, tone, constraints</li>
+                    <li>Show examples of what you want</li>
+                    <li>Test and iterate if first output isn't perfect</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- MISTAKE 5 - CLICK TO REVEAL -->
+        <div class="mistake-card" onclick="toggleMistake(this)">
+            <div class="mistake-title">❌ Not Iterating Enough</div>
+            <div class="mistake-problem" style="display: block;">
+                <p><strong>The Problem:</strong> First output is mediocre, so you give up or use it as-is. People forget that iteration is the key to great AI outputs.</p>
+            </div>
+            <div class="mistake-solution" style="display: none;">
+                <p><strong>✓ The Solution:</strong></p>
+                <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                    <li>Plan to iterate 2-3 times minimum</li>
+                    <li>Use follow-ups: "Make it more concise," "Add more examples"</li>
+                    <li>Provide specific feedback: "That section was weak, strengthen this part"</li>
+                    <li>Think of it as a collaborative writing process</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- MISTAKE 6 - CLICK TO REVEAL -->
+        <div class="mistake-card" onclick="toggleMistake(this)">
+            <div class="mistake-title">❌ Misusing AI for Tasks It Can't Do</div>
+            <div class="mistake-problem" style="display: block;">
+                <p><strong>The Problem:</strong> Using AI for tasks outside its capabilities (real-time calculations, complex math, logic problems, recent events) and getting wrong answers.</p>
+            </div>
+            <div class="mistake-solution" style="display: none;">
+                <p><strong>✓ The Solution:</strong></p>
+                <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                    <li>Know AI's strengths: reasoning, writing, brainstorming, analysis</li>
+                    <li>Know AI's weaknesses: math, current events, deterministic logic</li>
+                    <li>For math/calculations, use calculators or spreadsheets</li>
+                    <li>Use AI to explain or conceptualize, not to provide final answers</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="divider thick"></div>
+
+        <!-- ACCORDION: CHECKLIST -->
+        <div class="accordion-block">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span>Safe AI Usage Checklist</span>
+                <span class="accordion-toggle">▼</span>
+            </div>
+            <div class="accordion-body">
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"><strong>Before you use AI for important work, check these boxes:</strong></p>
+                <div style="background: white; padding: 1.5rem; border-radius: 8px;">
+                    <ul style="list-style: none; color: var(--slate-dark);">
+                        <li style="padding: 0.75rem 0; border-bottom: 1px solid var(--gray-border);">
+                            <input type="checkbox" style="margin-right: 1rem; cursor: pointer;">
+                            Is this data confidential? (If yes, use paid tier/API)
+                        </li>
+                        <li style="padding: 0.75rem 0; border-bottom: 1px solid var(--gray-border);">
+                            <input type="checkbox" style="margin-right: 1rem; cursor: pointer;">
+                            Does this need to be 100% accurate? (If yes, plan to verify)
+                        </li>
+                        <li style="padding: 0.75rem 0; border-bottom: 1px solid var(--gray-border);">
+                            <input type="checkbox" style="margin-right: 1rem; cursor: pointer;">
+                            Have I used the CLEAR framework?
+                        </li>
+                        <li style="padding: 0.75rem 0; border-bottom: 1px solid var(--gray-border);">
+                            <input type="checkbox" style="margin-right: 1rem; cursor: pointer;">
+                            Am I using AI for a task it's good at?
+                        </li>
+                        <li style="padding: 0.75rem 0; border-bottom: 1px solid var(--gray-border);">
+                            <input type="checkbox" style="margin-right: 1rem; cursor: pointer;">
+                            Have I planned to iterate and refine?
+                        </li>
+                        <li style="padding: 0.75rem 0;">
+                            <input type="checkbox" style="margin-right: 1rem; cursor: pointer;">
+                            Will I fact-check critical claims?
+                        </li>
+                    </ul>
+                </div>
+                <p style="color: var(--text-secondary); margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--gray-border);"><strong>If you answer "no" to any of these, adjust your approach before using AI output.</strong></p>
+            </div>
+        </div>
+
+        <div class="divider thick"></div>
+
+        <div style="text-align: center; margin-bottom: 2rem; color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Test Your Knowledge</div>
+
+        <!-- SCENARIO 1 -->
+        <div class="scenario-quiz">
+            <div class="scenario-quiz-question">🎯 Scenario 1: The Hallucination</div>
+            <div class="scenario-text">You ask ChatGPT "Who won the 2024 Academy Award for Best Picture?" It confidently responds with a movie title. You're not 100% sure if it's correct.</div>
+            
+            <div class="scenario-options">
+                <label class="scenario-option">
+                    <input type="radio" name="scenario-1" value="a" onchange="document.getElementById('scenario-1-btn').disabled=false">
+                    <span>Trust the AI and share it on social media</span>
+                </label>
+                <label class="scenario-option">
+                    <input type="radio" name="scenario-1" value="b" onchange="document.getElementById('scenario-1-btn').disabled=false">
+                    <span>Verify independently (Google, official sources) before sharing</span>
+                </label>
+                <label class="scenario-option">
+                    <input type="radio" name="scenario-1" value="c" onchange="document.getElementById('scenario-1-btn').disabled=false">
+                    <span>Ask AI three times and take majority vote</span>
+                </label>
+            </div>
+            <button class="quiz-button" id="scenario-1-btn" onclick="checkScenario('scenario-1', 'b')" disabled>Check Answer</button>
+            <div id="scenario-1-result" class="scenario-result">
+                <div class="scenario-result-title"></div>
+                <div class="scenario-result-content"></div>
+            </div>
+        </div>
+
+        <!-- SCENARIO 2 -->
+        <div class="scenario-quiz">
+            <div class="scenario-quiz-question">🎯 Scenario 2: Confidential Data</div>
+            <div class="scenario-text">You're using ChatGPT free tier to analyze customer names, emails, and purchase history to find trends. The data is sensitive but not encrypted before pasting.</div>
+            
+            <div class="scenario-options">
+                <label class="scenario-option">
+                    <input type="radio" name="scenario-2" value="a" onchange="document.getElementById('scenario-2-btn').disabled=false">
+                    <span>It's fine - OpenAI keeps it private</span>
+                </label>
+                <label class="scenario-option">
+                    <input type="radio" name="scenario-2" value="b" onchange="document.getElementById('scenario-2-btn').disabled=false">
+                    <span>Stop - Use paid API/business plan and anonymize data first</span>
+                </label>
+                <label class="scenario-option">
+                    <input type="radio" name="scenario-2" value="c" onchange="document.getElementById('scenario-2-btn').disabled=false">
+                    <span>Ask permission from customers first</span>
+                </label>
+            </div>
+            <button class="quiz-button" id="scenario-2-btn" onclick="checkScenario('scenario-2', 'b')" disabled>Check Answer</button>
+            <div id="scenario-2-result" class="scenario-result">
+                <div class="scenario-result-title"></div>
+                <div class="scenario-result-content"></div>
+            </div>
+        </div>
+
+        <!-- SCENARIO 3 -->
+        <div class="scenario-quiz">
+            <div class="scenario-quiz-question">🎯 Scenario 3: Poor Prompt</div>
+            <div class="scenario-text">Your first prompt: "Write about marketing." AI returns generic content. You use it as-is for your campaign.</div>
+            
+            <div class="scenario-options">
+                <label class="scenario-option">
+                    <input type="radio" name="scenario-3" value="a" onchange="document.getElementById('scenario-3-btn').disabled=false">
+                    <span>Accept it - AI did its job</span>
+                </label>
+                <label class="scenario-option">
+                    <input type="radio" name="scenario-3" value="b" onchange="document.getElementById('scenario-3-btn').disabled=false">
+                    <span>Refine with CLEAR framework, iterate 2-3 times, then use</span>
+                </label>
+                <label class="scenario-option">
+                    <input type="radio" name="scenario-3" value="c" onchange="document.getElementById('scenario-3-btn').disabled=false">
+                    <span>Give up on AI - write it yourself</span>
+                </label>
+            </div>
+            <button class="quiz-button" id="scenario-3-btn" onclick="checkScenario('scenario-3', 'b')" disabled>Check Answer</button>
+            <div id="scenario-3-result" class="scenario-result">
+                <div class="scenario-result-title"></div>
+                <div class="scenario-result-content"></div>
+            </div>
+        </div>
+
+        <div class="divider thick"></div>
+            <div class="quiz-question">✏️ Check Your Understanding</div>
+            <div style="font-size: 1rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--slate-dark);">You need to ask ChatGPT to analyze employee salary data and recommend adjustments. What's the biggest risk?</div>
+            <div class="quiz-options">
+                <label class="quiz-option">
+                    <input type="radio" name="q1" value="a" onchange="document.getElementById('q1-check').disabled=false">
+                    <span>ChatGPT might hallucinate the data and give wrong recommendations</span>
+                </label>
+                <label class="quiz-option">
+                    <input type="radio" name="q1" value="b" onchange="document.getElementById('q1-check').disabled=false">
+                    <span>You're pasting confidential employee data into free tier—privacy breach risk</span>
+                </label>
+                <label class="quiz-option">
+                    <input type="radio" name="q1" value="c" onchange="document.getElementById('q1-check').disabled=false">
+                    <span>ChatGPT doesn't understand business context</span>
+                </label>
+            </div>
+            <button class="quiz-button" id="q1-check" onclick="checkQuiz('q1', 'b')" disabled>Check Answer</button>
+            <div class="quiz-feedback" id="q1-feedback"></div>
+        </div>
+
+        <div class="divider thick"></div>
+
+        <div class="lesson-summary">
+            <div class="summary-title">Key Takeaways</div>
+            <ul class="summary-points">
+                <li><strong>Never trust AI facts blindly.</strong> Always verify critical information independently.</li>
+                <li><strong>Confidential data belongs in paid APIs</strong>, not free tiers.</li>
+                <li><strong>AI isn't real-time.</strong> Use it for analysis, not for current events or live data.</li>
+                <li><strong>Prompts matter.</strong> Vague prompts get vague answers. Use CLEAR framework.</li>
+                <li><strong>Iteration is key.</strong> First output is rarely perfect—plan to refine.</li>
+                <li><strong>Know AI's limits.</strong> Use it for writing/reasoning, not for math/logic.</li>
+                <li><strong>Use a checklist</strong> before trusting AI output for important decisions.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Lesson 6: Common Mistakes | GenAI Academy © 2024</p>
+    </div>
+
+    <script>
+        function toggleAccordion(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.accordion-toggle');
+            
+            header.classList.toggle('open');
+            body.classList.toggle('open');
+            
+            if (toggle) {
+                toggle.classList.toggle('open');
+            }
+        }
+
+        function toggleMistake(element) {
+            const problem = element.querySelector('.mistake-problem');
+            const solution = element.querySelector('.mistake-solution');
+            
+            if (problem.style.display === 'none') {
+                problem.style.display = 'block';
+                solution.style.display = 'none';
+            } else {
+                problem.style.display = 'none';
+                solution.style.display = 'block';
+            }
+        }
+
+        function checkQuiz(name, correct) {
+            const selected = document.querySelector(`input[name="${name}"]:checked`);
+            const feedback = document.getElementById(`${name}-feedback`);
+            
+            if (!selected) return;
+            
+            feedback.classList.add('show');
+            if (selected.value === correct) {
+                feedback.classList.add('correct');
+                feedback.classList.remove('incorrect');
+                feedback.textContent = '✅ Correct! Employee salary data is highly confidential. Pasting it into free ChatGPT could leak sensitive HR information. Use a paid API or enterprise plan for sensitive data.';
+            } else {
+                feedback.classList.add('incorrect');
+                feedback.classList.remove('correct');
+                feedback.textContent = '❌ Not quite. While hallucinations and context are concerns, the biggest risk is data privacy. Employee salary data is confidential and should never go into free tiers.';
+            }
+        }
+
+        function checkScenario(scenarioId, correct) {
+            const selected = document.querySelector(`input[name="${scenarioId}"]:checked`);
+            const result = document.getElementById(`${scenarioId}-result`);
+            
+            if (!selected) return;
+            
+            const scenarios = {
+                'scenario-1': {
+                    b: {
+                        title: '✅ Correct! Always Verify Critical Facts',
+                        content: 'AI can hallucinate. A plausible-sounding answer might be completely wrong. For facts that matter, verify independently using authoritative sources before sharing.'
+                    },
+                    wrong: {
+                        title: '❌ Not Quite',
+                        content: 'Trusting AI without verification risks spreading misinformation. Asking 3 times doesn\'t help—if AI hallucinates, it may give the same wrong answer 3 times.'
+                    }
+                },
+                'scenario-2': {
+                    b: {
+                        title: '✅ Correct! Protect Sensitive Data',
+                        content: 'Free tier data may be used for training. Confidential customer data must use paid APIs or enterprise plans. Also anonymize data first (remove names/emails). This is both a privacy and legal issue.'
+                    },
+                    wrong: {
+                        title: '❌ Not Quite',
+                        content: 'Free ChatGPT data could be used for training models. Sensitive data belongs in paid APIs. OpenAI doesn\'t guarantee privacy on free tier.'
+                    }
+                },
+                'scenario-3': {
+                    b: {
+                        title: '✅ Correct! Iteration is Key',
+                        content: 'Generic output means you need a better prompt. Use CLEAR framework: Specify audience, tone, length, constraints. Iterate based on output. First output ≠ final output. Plan 2-3 refinement prompts.'
+                    },
+                    wrong: {
+                        title: '❌ Not Quite',
+                        content: 'A vague prompt gets vague output. Instead of accepting or quitting, refine your prompt using CLEAR framework and iterate. That\'s how you get great AI results.'
+                    }
+                }
+            };
+
+            result.classList.add('show');
+            if (selected.value === correct) {
+                result.classList.add('correct');
+                result.classList.remove('incorrect');
+                result.querySelector('.scenario-result-title').textContent = scenarios[scenarioId][correct].title;
+                result.querySelector('.scenario-result-content').textContent = scenarios[scenarioId][correct].content;
+            } else {
+                result.classList.add('incorrect');
+                result.classList.remove('correct');
+                result.querySelector('.scenario-result-title').textContent = scenarios[scenarioId]['wrong'].title;
+                result.querySelector('.scenario-result-content').textContent = scenarios[scenarioId]['wrong'].content;
+            }
+        }
+    </script>
+</body>
+</html>

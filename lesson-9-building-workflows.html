@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Workflows - GenAI Academy</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --slate-dark: #1A202C; --slate-light: #2D3748; --teal: #06B6D4; --teal-light: #22D3EE;
+            --cream: #F8F9FA; --gray-border: #E2E8F0; --text-secondary: #64748B; --success: #10B981;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'IBM Plex Sans', 'Segoe UI', sans-serif;
+            background: var(--cream); color: var(--slate-dark); line-height: 1.6;
+        }
+        .header {
+            position: sticky; top: 0; background: linear-gradient(135deg, var(--slate-dark) 0%, var(--slate-light) 100%);
+            color: white; padding: 1.5rem 2rem; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .header-title { font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 1rem; }
+        .header-back { background: rgba(255, 255, 255, 0.2); padding: 0.5rem 1rem; border-radius: 6px;
+            color: white; text-decoration: none; font-size: 0.9rem; transition: background 0.3s ease; }
+        .header-back:hover { background: rgba(255, 255, 255, 0.3); }
+        .container { max-width: 1000px; margin: 3rem auto; padding: 0 2rem; }
+        .hero { text-align: center; margin-bottom: 3rem; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--slate-dark), var(--teal));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero p { font-size: 1.125rem; color: var(--text-secondary); margin-bottom: 2rem; }
+        .divider { height: 1px; background: var(--gray-border); margin: 3rem 0; }
+        .divider.thick { height: 2px; background: linear-gradient(90deg, transparent 0%, var(--teal) 50%, transparent 100%); }
+        .learning-zone {
+            background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
+            color: white; padding: 2rem; border-radius: 12px; display: flex; gap: 1.5rem; margin-bottom: 2rem;
+        }
+        .learning-zone-icon { font-size: 2.5rem; flex-shrink: 0; }
+        .learning-zone h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+        .section-header { display: flex; align-items: center; gap: 1rem; margin: 2rem 0 1.5rem 0;
+            font-size: 1.125rem; font-weight: 600; color: var(--slate-dark); }
+        .section-icon { width: 28px; height: 28px; background: var(--teal); border-radius: 6px;
+            display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.875rem; }
+        .accordion-block {
+            background: white; border: 1px solid var(--gray-border); border-radius: 8px; margin-bottom: 1rem;
+            overflow: hidden; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .accordion-header { background: linear-gradient(135deg, #F8F9FA 0%, #F0F4F8 100%); padding: 1.5rem;
+            cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center;
+            font-weight: 600; color: var(--slate-dark); border-bottom: 2px solid transparent; transition: all 0.3s ease; }
+        .accordion-header:hover { background: linear-gradient(135deg, #F0F4F8 0%, #E0E9F0 100%);
+            border-bottom-color: var(--teal); }
+        .accordion-header.open { background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
+            color: white; border-bottom-color: var(--teal-light); }
+        .accordion-toggle { transition: transform 0.3s ease; font-size: 0.9rem; }
+        .accordion-toggle.open { transform: rotate(180deg); }
+        .accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding: 0 1.5rem; }
+        .accordion-body.open { max-height: 2000px; padding: 1.5rem; }
+        .step-card { background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%); border-left: 4px solid var(--teal);
+            padding: 1.5rem; border-radius: 8px; margin: 1rem 0; }
+        .step-card strong { color: var(--teal); display: block; margin-bottom: 0.5rem; }
+        .workflow-box {
+            background: white; border: 2px solid var(--teal); padding: 1.5rem; border-radius: 8px;
+            margin: 1.5rem 0; font-family: 'Courier New', monospace; font-size: 0.9rem;
+        }
+        .workflow-box .step { margin-bottom: 1rem; }
+        .workflow-box .step::before { content: '→ '; color: var(--teal); font-weight: 700; }
+        .quiz-container { background: #F8F9FA; padding: 2rem; border-radius: 12px; margin: 2rem 0;
+            border-left: 4px solid var(--teal); }
+        .quiz-question { font-size: 1.125rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--slate-dark); }
+        .quiz-options { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
+        .quiz-option { display: flex; align-items: center; gap: 1rem; cursor: pointer; padding: 1rem;
+            background: white; border-radius: 8px; border: 2px solid var(--gray-border); transition: all 0.3s ease; }
+        .quiz-option:hover { border-color: var(--teal); }
+        .quiz-option input[type="radio"] { cursor: pointer; width: 20px; height: 20px; accent-color: var(--teal); }
+        .quiz-button { background: var(--teal); color: white; border: none; padding: 1rem 2rem;
+            border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.3s ease; }
+        .quiz-button:hover:not(:disabled) { background: var(--teal-light); }
+        .quiz-button:disabled { background: #CBD5E1; cursor: not-allowed; }
+        .quiz-feedback { margin-top: 1.5rem; padding: 1rem; border-radius: 8px; font-weight: 500; display: none; }
+        .quiz-feedback.show { display: block; }
+        .quiz-feedback.correct { background: #ECFDF5; color: #065F46; border-left: 4px solid var(--success); }
+        .quiz-feedback.incorrect { background: #FEF2F2; color: #7F1D1D; border-left: 4px solid #EF4444; }
+        .lesson-summary {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%); border-left: 4px solid var(--teal);
+            padding: 2rem; border-radius: 8px; margin-top: 2rem;
+        }
+        .summary-title { font-size: 1.125rem; font-weight: 600; color: var(--slate-dark); margin-bottom: 1rem; }
+        .summary-points { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+        .summary-points li { padding-left: 2rem; position: relative; color: var(--text-secondary); }
+        .summary-points li::before { content: '✓'; position: absolute; left: 0; color: var(--teal); font-weight: 700; }
+        .footer { background: var(--slate-dark); color: white; text-align: center; padding: 3rem 2rem; margin-top: 5rem; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-title"><span>🤖</span><span>GenAI Academy</span></div>
+        <a href="index.html" class="header-back">← Back to Course</a>
+    </div>
+
+    <div class="container">
+        <div class="hero">
+            <h1>Building AI Workflows</h1>
+            <p>Scale your AI usage. Automate tasks and multiply your impact with repeatable workflows.</p>
+        </div>
+
+        <div class="divider thick"></div>
+
+        <div class="learning-zone">
+            <div class="learning-zone-icon">⚙️</div>
+            <div>
+                <h3>Automation at Scale</h3>
+                <p>From manual tasks to automated workflows. Learn how to design systems that work 24/7.</p>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section-header"><div class="section-icon">🎓</div><span>Purpose</span></div>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">Once you master AI, the next step is automation. This lesson teaches you to build repeatable workflows that handle tasks automatically. From simple prompt templates to complex multi-step workflows, you'll learn to scale AI's impact.</p>
+
+        <div class="divider"></div>
+
+        <div class="section-header"><div class="section-icon">✓</div><span>Lesson Objectives</span></div>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; color: var(--text-secondary);">
+            <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Understand workflow design principles</span></li>
+            <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Learn to create prompt templates for consistency</span></li>
+            <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Build multi-step AI workflows</span></li>
+            <li style="display: flex; gap: 0.5rem;"><span style="color: var(--teal); font-weight: 700;">→</span><span>Integrate AI into automation tools</span></li>
+        </ul>
+
+        <div class="divider thick"></div>
+
+        <!-- PART 1: TEMPLATES -->
+        <div class="accordion-block">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span>📋 Prompt Templates: The Foundation</span>
+                <span class="accordion-toggle">▼</span>
+            </div>
+            <div class="accordion-body">
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"><strong>A prompt template is a reusable pattern for consistent outputs.</strong> Instead of writing prompts from scratch each time, you save templates and reuse them.</p>
+                
+                <div class="step-card">
+                    <strong>Example: Content Marketing Template</strong>
+                    <p>Instead of writing new prompts for each blog post, save this template:</p>
+                    <div class="workflow-box">
+                        <div class="step">Role: You are a marketing expert specializing in [INDUSTRY]</div>
+                        <div class="step">Task: Write a 500-word blog post</div>
+                        <div class="step">Topic: [TOPIC]</div>
+                        <div class="step">Audience: [AUDIENCE]</div>
+                        <div class="step">Tone: [TONE - professional/casual/humorous]</div>
+                        <div class="step">CTA: End with a call-to-action about [CTA]</div>
+                    </div>
+                </div>
+
+                <p style="color: var(--text-secondary); margin-top: 1.5rem;"><strong>Benefits:</strong></p>
+                <ul style="list-style: disc; margin-left: 2rem; color: var(--text-secondary);">
+                    <li>Consistency: Same prompt structure, different variables</li>
+                    <li>Speed: No need to rebuild prompts each time</li>
+                    <li>Quality: Proven template = proven results</li>
+                    <li>Sharing: Team can reuse same templates</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- PART 2: MULTI-STEP WORKFLOWS -->
+        <div class="accordion-block">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span>🔄 Multi-Step Workflows</span>
+                <span class="accordion-toggle">▼</span>
+            </div>
+            <div class="accordion-body">
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"><strong>Chain multiple AI calls together for powerful results.</strong> One AI output becomes input for the next.</p>
+                
+                <div class="step-card">
+                    <strong>Example: Blog to Social Content Workflow</strong>
+                    <div class="workflow-box">
+                        <div class="step">Step 1: Write blog post (input: topic)</div>
+                        <div class="step">Step 2: Extract 3 key insights (input: blog post)</div>
+                        <div class="step">Step 3: Write Twitter thread (input: insights)</div>
+                        <div class="step">Step 4: Write LinkedIn summary (input: insights)</div>
+                        <div class="step">Step 5: Generate SEO keywords (input: blog post)</div>
+                    </div>
+                </div>
+
+                <p style="color: var(--text-secondary); margin-top: 1.5rem; padding: 1rem; background: #E0F2FE; border-left: 4px solid var(--teal); border-radius: 8px;"><strong>💡 What happens:</strong> One blog topic flows through 5 AI steps, generating blog + social posts + SEO keywords. 60 minutes of manual work → 2 minutes of AI automation.</p>
+            </div>
+        </div>
+
+        <!-- PART 3: AUTOMATION TOOLS -->
+        <div class="accordion-block">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span>🤖 Automation Tools (No Coding)</span>
+                <span class="accordion-toggle">▼</span>
+            </div>
+            <div class="accordion-body">
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"><strong>Tools that connect AI to your apps without coding:</strong></p>
+                
+                <div style="background: white; padding: 1rem; border-radius: 8px; border: 1px solid var(--gray-border); margin-bottom: 1rem;">
+                    <p style="color: var(--slate-dark); margin-bottom: 0.75rem;"><strong>Make (formerly Integromat)</strong><br/>Connect ChatGPT, Claude to Slack, Google Sheets, Gmail, etc. Build visual workflows.</p>
+                </div>
+
+                <div style="background: white; padding: 1rem; border-radius: 8px; border: 1px solid var(--gray-border); margin-bottom: 1rem;">
+                    <p style="color: var(--slate-dark); margin-bottom: 0.75rem;"><strong>Zapier</strong><br/>Similar to Make. Connect 6000+ apps including AI to automate tasks.</p>
+                </div>
+
+                <div style="background: white; padding: 1rem; border-radius: 8px; border: 1px solid var(--gray-border); margin-bottom: 1rem;">
+                    <p style="color: var(--slate-dark); margin-bottom: 0.75rem;"><strong>n8n</strong><br/>Open-source workflow automation. More flexible than Zapier/Make.</p>
+                </div>
+
+                <div style="background: white; padding: 1rem; border-radius: 8px; border: 1px solid var(--gray-border);">
+                    <p style="color: var(--slate-dark); margin-bottom: 0.75rem;"><strong>Custom Scripts (Python/JavaScript)</strong><br/>For developers: write code that calls AI APIs automatically.</p>
+                </div>
+
+                <div style="margin-top: 1.5rem; padding: 1rem; background: #E0F2FE; border-left: 4px solid var(--teal); border-radius: 8px;">
+                    <p style="margin: 0; color: var(--slate-dark);"><strong>Example workflow:</strong> When new email arrives in Gmail → Extract key info with AI → Add to Google Sheet → Slack notification</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PART 4: WORKFLOW PATTERNS -->
+        <div class="accordion-block">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span>✨ Common Workflow Patterns</span>
+                <span class="accordion-toggle">▼</span>
+            </div>
+            <div class="accordion-body">
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"><strong>Proven patterns you can use:</strong></p>
+                
+                <div class="step-card">
+                    <strong>Pattern 1: Batch Processing</strong>
+                    <p>Collect 100 items → Process all with AI → Export results. Use this for bulk operations.</p>
+                </div>
+
+                <div class="step-card">
+                    <strong>Pattern 2: Approval Workflow</strong>
+                    <p>AI generates content → Human reviews → Auto-publish if approved. Combines automation with safety.</p>
+                </div>
+
+                <div class="step-card">
+                    <strong>Pattern 3: Continuous Monitoring</strong>
+                    <p>Check for new data → Analyze with AI → Alert if threshold met. Use for real-time insights.</p>
+                </div>
+
+                <div class="step-card">
+                    <strong>Pattern 4: Hybrid Human-AI</strong>
+                    <p>AI does 80% of work → Human refines remaining 20%. Optimizes speed and quality.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PART 5: GETTING STARTED -->
+        <div class="accordion-block">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span>🚀 Build Your First Workflow</span>
+                <span class="accordion-toggle">▼</span>
+            </div>
+            <div class="accordion-body">
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;"><strong>Step-by-step to automate one task:</strong></p>
+                
+                <div class="workflow-box">
+                    <div class="step">Step 1: Identify your most repetitive task (30+ mins/week)</div>
+                    <div class="step">Step 2: Break it into smaller steps</div>
+                    <div class="step">Step 3: Create a prompt template for each step</div>
+                    <div class="step">Step 4: Test manually (run through it once)</div>
+                    <div class="step">Step 5: Build in Make/Zapier or write a script</div>
+                    <div class="step">Step 6: Run for 1 week, refine based on results</div>
+                    <div class="step">Step 7: Deploy and scale</div>
+                </div>
+
+                <p style="color: var(--text-secondary); margin-top: 1.5rem; padding: 1rem; background: #E0F2FE; border-left: 4px solid var(--teal); border-radius: 8px;"><strong>💡 Start small.</strong> Pick one task. Automate it. See the time savings. Then automate 3 more.</p>
+            </div>
+        </div>
+
+        <div class="divider thick"></div>
+
+        <div class="quiz-container">
+            <div class="quiz-question">✏️ Check Your Understanding</div>
+            <div style="font-size: 1rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--slate-dark);">You want to automate your email filtering: urgent emails → Slack alert. Which tool is best for someone with no coding experience?</div>
+            <div class="quiz-options">
+                <label class="quiz-option">
+                    <input type="radio" name="q1" value="a" onchange="document.getElementById('q1-check').disabled=false">
+                    <span>Write custom Python code</span>
+                </label>
+                <label class="quiz-option">
+                    <input type="radio" name="q1" value="b" onchange="document.getElementById('q1-check').disabled=false">
+                    <span>Use Zapier or Make with visual workflow builder</span>
+                </label>
+                <label class="quiz-option">
+                    <input type="radio" name="q1" value="c" onchange="document.getElementById('q1-check').disabled=false">
+                    <span>Manually check email every hour</span>
+                </label>
+            </div>
+            <button class="quiz-button" id="q1-check" onclick="checkQuiz('q1', 'b')" disabled>Check Answer</button>
+            <div class="quiz-feedback" id="q1-feedback"></div>
+        </div>
+
+        <div class="divider thick"></div>
+
+        <div class="lesson-summary">
+            <div class="summary-title">Key Takeaways</div>
+            <ul class="summary-points">
+                <li><strong>Prompt templates create consistency.</strong> Save time with reusable patterns.</li>
+                <li><strong>Chain AI calls for powerful results.</strong> One output feeds into the next.</li>
+                <li><strong>Automation tools make scaling easy.</strong> Use Make/Zapier for no-code automation.</li>
+                <li><strong>Start with one repetitive task.</strong> Pick something that takes 30+ mins/week.</li>
+                <li><strong>Test and refine.</strong> Automation rarely works perfectly on first try—iterate.</li>
+                <li><strong>Scale gradually.</strong> Automate one task → learn → automate 3 more.</li>
+                <li><strong>AI + Automation = Superpower.</strong> Together they multiply your productivity.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Building Workflows | GenAI Academy © 2024</p>
+    </div>
+
+    <script>
+        function toggleAccordion(header) {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.accordion-toggle');
+            header.classList.toggle('open');
+            body.classList.toggle('open');
+            if (toggle) toggle.classList.toggle('open');
+        }
+        function checkQuiz(name, correct) {
+            const selected = document.querySelector(`input[name="${name}"]:checked`);
+            const feedback = document.getElementById(`${name}-feedback`);
+            if (!selected) return;
+            feedback.classList.add('show');
+            if (selected.value === correct) {
+                feedback.classList.add('correct');
+                feedback.classList.remove('incorrect');
+                feedback.textContent = '✅ Correct! Zapier and Make have drag-and-drop builders perfect for non-technical users. Connect Gmail to Slack in minutes, no coding needed.';
+            } else {
+                feedback.classList.add('incorrect');
+                feedback.classList.remove('correct');
+                feedback.textContent = '❌ Not quite. For non-coders, Zapier or Make are the best options. They let you build workflows visually without programming.';
+            }
+        }
+    </script>
+</body>
+</html>
